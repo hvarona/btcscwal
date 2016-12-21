@@ -7,15 +7,24 @@ package com.cryptocoincore.bitcoin;
 
 import com.cryptocoincore.base.CryptoCoinAccount;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.BlockChain;
+import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Peer;
 import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.listeners.DownloadProgressTracker;
+import org.bitcoinj.net.discovery.DnsDiscovery;
 import org.bitcoinj.store.BlockStore;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.SPVBlockStore;
 import org.bitcoinj.wallet.Wallet;
 import static org.bitcoinj.wallet.Wallet.BalanceType.*;
+import static org.spongycastle.asn1.ua.DSTU4145NamedCurves.params;
 
 /**
  *
@@ -40,9 +49,39 @@ public class BitcoinAccount extends CryptoCoinAccount{
             BlockStore blockStore = new SPVBlockStore(netParams, file);
             BlockChain chain = new BlockChain(netParams, wallet, blockStore);
             PeerGroup peerGroup = new PeerGroup(netParams, chain);
+            peerGroup.addPeerDiscovery(new DnsDiscovery(netParams));
             peerGroup.addWallet(wallet);
             peerGroup.start();            
-            peerGroup.downloadBlockChain();
+            
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date now = new Date();
+            System.out.println("("+dateFormat.format(now)+") Starting to download block chain...");
+            
+            DownloadProgressTracker bListener = new DownloadProgressTracker() {
+                @Override
+                public void doneDownload() {
+                    System.out.println("blockchain downloaded");
+                }
+                
+                @Override                
+                public void onBlocksDownloaded(Peer peer, Block block, FilteredBlock filteredBlock, int blocksLeft){
+                    System.out.println(blocksLeft+" blocks remains...");
+                }
+                
+                @Override                
+                public void progress(double pct, int blocksSoFar, Date date){
+                    System.out.println(blocksSoFar+" blocks so far...");
+                }
+            };
+                        
+            peerGroup.startBlockChainDownload(bListener);
+            
+            try{
+                bListener.await();
+            } catch(InterruptedException e){
+                
+            }
+            System.out.println("("+dateFormat.format(now)+") Block chain downloaded");            
             
             String balance = (wallet.getBalance(AVAILABLE)).toFriendlyString();
 
