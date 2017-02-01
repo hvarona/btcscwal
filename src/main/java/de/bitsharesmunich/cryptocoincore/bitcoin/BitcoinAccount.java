@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cryptocoincore.bitcoin;
+package de.bitsharesmunich.cryptocoincore.bitcoin;
 
-import com.cryptocoincore.base.CryptoCoinAccount;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import java.io.File;

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cryptocoincore.bitcoin;
+package de.bitsharesmunich.cryptocoincore.bitcoin;
 
-import com.cryptocoincore.base.CryptoCoinAccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
 import com.google.common.base.Joiner;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.wallet.DeterministicSeed;

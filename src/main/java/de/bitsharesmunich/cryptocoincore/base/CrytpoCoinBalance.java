@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cryptocoincore.base;
+package de.bitsharesmunich.cryptocoincore.base;
 
 /**
  *
  * @author javier
  */
-public enum Coin {
-    BITCOIN, BITSHARE
+public class CrytpoCoinBalance {
+    
+    //protected DateTime date;
+    //protected double ammount;
+    
 }

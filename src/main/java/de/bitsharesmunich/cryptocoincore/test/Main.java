@@ -1,6 +1,6 @@
-package com.cryptocoincore.test;
+package de.bitsharesmunich.cryptocoincore.test;
 
-import com.cryptocoincore.test.MainTest;
+import de.bitsharesmunich.cryptocoincore.test.MainTest;
 
 public class Main {
 

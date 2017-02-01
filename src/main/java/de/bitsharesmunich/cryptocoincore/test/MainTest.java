@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cryptocoincore.test;
+package de.bitsharesmunich.cryptocoincore.test;
 
-import com.cryptocoincore.bitcoin.BitcoinAccount;
-import com.cryptocoincore.bitcoin.BitcoinAccountSeed;
+import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
+import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccountSeed;
 import com.cryptocoincore.bitcoin.BitcoinObjectsFactory;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;

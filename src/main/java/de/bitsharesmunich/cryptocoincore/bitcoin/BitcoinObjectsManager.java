@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.cryptocoincore.bitcoin;
+package de.bitsharesmunich.cryptocoincore.bitcoin;
 
-import com.cryptocoincore.base.CryptoCoinObjectsManager;
-import org.bitcoinj.core.Address;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinObjectsManager;
 import org.bitcoinj.core.BlockChain;
-import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.params.TestNet3Params;
