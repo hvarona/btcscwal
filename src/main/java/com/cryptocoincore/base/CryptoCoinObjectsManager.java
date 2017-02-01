@@ -9,7 +9,7 @@ package com.cryptocoincore.base;
  *
  * @author javier
  */
-public abstract class CryptoCoinObjectsFactory<T extends CryptoCoinAccount> {
+public abstract class CryptoCoinObjectsManager<T extends CryptoCoinAccount> {
     
     public abstract T newAccount();
     

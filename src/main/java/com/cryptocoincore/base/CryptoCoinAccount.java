@@ -11,10 +11,10 @@ package com.cryptocoincore.base;
  */
 public abstract class CryptoCoinAccount {
     
-    protected CryptoCoinAccountId id;
+    protected CryptoCoinAccountSeed seed;
     
-    public CryptoCoinAccountId getId(){
-        return this.id;
+    public CryptoCoinAccountSeed getSeed(){
+        return this.seed;
     }
     
     //public abstract CryptoCoinAccount(JSONObject json);

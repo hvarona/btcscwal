@@ -5,7 +5,7 @@
  */
 package com.cryptocoincore.bitcoin;
 
-import com.cryptocoincore.base.CryptoCoinObjectsFactory;
+import com.cryptocoincore.base.CryptoCoinObjectsManager;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.BlockChain;
 import org.bitcoinj.core.ECKey;
@@ -22,11 +22,11 @@ import org.bitcoinj.wallet.Wallet;
  *
  * @author javier
  */
-public class BitcoinObjectsFactory extends CryptoCoinObjectsFactory{
+public class BitcoinObjectsManager extends CryptoCoinObjectsManager{
     
     protected NetworkParameters netParams = TestNet3Params.get();
     
-    public BitcoinObjectsFactory(NetworkParameters netParams){
+    public BitcoinObjectsManager(NetworkParameters netParams){
         this.netParams = netParams;
     }
     
@@ -50,7 +50,7 @@ public class BitcoinObjectsFactory extends CryptoCoinObjectsFactory{
             DeterministicSeed seed = wallet.getKeyChainSeed();
             peerGroup.stop();
             
-            return new BitcoinAccount(new BitcoinAccountId(wallet, this.netParams));
+            return new BitcoinAccount(new BitcoinAccountSeed(wallet, this.netParams));
             
         } catch (BlockStoreException ex){
 

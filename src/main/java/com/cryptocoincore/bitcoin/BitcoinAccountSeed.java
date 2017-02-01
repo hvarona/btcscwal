@@ -5,7 +5,7 @@
  */
 package com.cryptocoincore.bitcoin;
 
-import com.cryptocoincore.base.CryptoCoinAccountId;
+import com.cryptocoincore.base.CryptoCoinAccountSeed;
 import com.google.common.base.Joiner;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.wallet.DeterministicSeed;
@@ -17,11 +17,11 @@ import org.json.*;
  *
  * @author javier
  */
-public class BitcoinAccountId extends CryptoCoinAccountId {
+public class BitcoinAccountSeed extends CryptoCoinAccountSeed {
     protected Wallet wallet;
     protected NetworkParameters netParams;
     
-    public BitcoinAccountId(Wallet wallet, NetworkParameters netParams){
+    public BitcoinAccountSeed(Wallet wallet, NetworkParameters netParams){
         this.wallet = wallet;
         this.netParams = netParams;        
     }
@@ -30,7 +30,7 @@ public class BitcoinAccountId extends CryptoCoinAccountId {
        return this.wallet; 
     }
     
-    public BitcoinAccountId(String json){
+    public BitcoinAccountSeed(String json){
         this.loadFromJsonString(json);   
     }
     
