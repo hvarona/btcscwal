@@ -9,9 +9,13 @@ import java.util.Arrays;
 
 /**
  *
- * @author henry
+ * @author Henry
  */
 public class CryptoCoinSeedBrainkey extends CryptoCoinAccountSeed {
+    
+    public CryptoCoinSeedBrainkey(String words, int sequence) {
+        super(CryptoCoinSeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
+    }
 
     @Override
     public byte[] getSeed() {
@@ -34,10 +38,5 @@ public class CryptoCoinSeedBrainkey extends CryptoCoinAccountSeed {
         }
         return null;
     }
-
-    public CryptoCoinSeedBrainkey(String words, int sequence) {
-        super(CryptoCoinSeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
-
-    }
-
+    
 }

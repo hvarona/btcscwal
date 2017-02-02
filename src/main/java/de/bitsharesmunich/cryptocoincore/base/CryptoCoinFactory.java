@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bitsharesmunich.cryptocoincore.base;
-
-import com.cryptocoincore.bitcoin.BitcoinObjectsFactory;
 
 /**
  *
- * @author javier
+ * @author Henry
  */
 public class CryptoCoinFactory {
     
-    public static CryptoCoinObjectsManager getObjectFactory(Coin coin){
+    public static CryptoCoinManager getObjectFactory(Coin coin){
         switch(coin){
             case BITCOIN:
                 //return new BitcoinObjectsFactory();

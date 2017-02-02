@@ -2,7 +2,7 @@ package de.bitsharesmunich.cryptocoincore.base;
 
 /**
  *
- * @author henry
+ * @author Henry
  */
 public enum CryptoCoinSeedType {
     BIP39,

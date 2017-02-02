@@ -1,17 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bitsharesmunich.cryptocoincore.base;
+
+import java.util.Date;
 
 /**
  *
- * @author javier
+ * @author Henry
  */
 public class CrytpoCoinBalance {
     
-    //protected DateTime date;
-    //protected double ammount;
+    protected CryptoCoinType type;
+    protected Date date;
+    protected double ammount;
     
 }
