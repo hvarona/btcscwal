@@ -18,9 +18,17 @@ import org.bitcoinj.wallet.Wallet;
 public class BitcoinObjectsManager extends CryptoCoinObjectsManager{
     
     protected NetworkParameters netParams = TestNet3Params.get();
+    private BitcoinObjectsManager instance = null;
     
-    public BitcoinObjectsManager(NetworkParameters netParams){
-        this.netParams = netParams;
+    private BitcoinObjectsManager(){
+    }
+    
+    public BitcoinObjectsManager getInstance(){
+        if (this.instance == null){
+            this.instance = new BitcoinObjectsManager();
+        }
+        
+        return this.instance;
     }
     
     @Override

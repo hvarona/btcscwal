@@ -11,6 +11,8 @@ package de.bitsharesmunich.cryptocoincore.base;
  */
 public abstract class CryptoCoinAccount {
     
+    protected String id;
+    protected Coin coin;
     protected CryptoCoinAccountSeed seed;
     
     public CryptoCoinAccountSeed getSeed(){
@@ -18,6 +20,23 @@ public abstract class CryptoCoinAccount {
     }
     
     //public abstract CryptoCoinAccount(JSONObject json);
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Coin getCoin() {
+        return coin;
+    }
+
+    public void setCoin(Coin coin) {
+        this.coin = coin;
+    }
+    
     
     //public abstract JSONObject toJson();   
     

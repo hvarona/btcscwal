@@ -5,5 +5,5 @@ package de.bitsharesmunich.cryptocoincore.base;
  * @author Henry
  */
 public enum Coin {
-    BITCOIN, LITECOIN, DASH, DOGECOIN, BITSHARE
+    BITCOIN, BITCOIN_TEST, LITECOIN, DASH, DOGECOIN, BITSHARE
 }

@@ -8,6 +8,7 @@ package de.bitsharesmunich.cryptocoincore.bitcoin;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +43,7 @@ public class BitcoinAccount extends CryptoCoinAccount{
     
     public BitcoinAccount(BitcoinAccountSeed seed){
         this.seed = seed;
+        this.coin = BITCOIN;
     }
     
     public void connect(){
