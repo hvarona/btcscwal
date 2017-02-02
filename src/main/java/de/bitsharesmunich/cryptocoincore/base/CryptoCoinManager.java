@@ -8,6 +8,6 @@ public abstract class CryptoCoinManager<T extends CryptoCoinAccount> {
     
     public abstract T newAccount();
     
-    //public abstract T getAccount(CryptoCoinAccountId id);
+    public abstract T getAccountFromJsonSeed(String jsonSeed);
     
 }

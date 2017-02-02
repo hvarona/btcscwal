@@ -5,7 +5,10 @@
  */
 package de.bitsharesmunich.cryptocoincore.test;
 
+import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinFactory;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,17 +92,23 @@ public class CryptoCoreSQLite{
                 ResultSet rs = stmt.executeQuery(sql);
                 
                 if (rs.getFetchSize() > 0){
-                    
+                    CryptoCoinAccount nextAccount;
+                    CryptoCoinManager coinManager;
                     while(rs.next()){
-                        CryptoCoreAccount account =
-                        
-                        rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_ID);
+                        coinManager = CryptoCoinFactory.getObjectManager(
+                                Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_COIN)));
+                        nextAccount = coinManager.getAccountFromJsonSeed(
+                                rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_SEED));
+                        nextAccount.setId(rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_ID));                        
+                        accounts.add(nextAccount);
                     }
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }                        
         }
+        
+        return accounts;
     }
     
     public void modifiyCryptoCoinAccount(CryptoCoinAccount account){

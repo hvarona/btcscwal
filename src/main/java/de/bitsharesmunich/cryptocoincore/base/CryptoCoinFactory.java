@@ -1,7 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
 
-import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinObjectsManager;
+import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 /**
  *
  * @author Henry
@@ -9,10 +9,10 @@ import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinObjectsManager;
 public class CryptoCoinFactory {
     
 
-    public static CryptoCoinObjectsManager getObjectManager(Coin coin){
+    public static CryptoCoinManager getObjectManager(Coin coin){
         switch(coin){
             case BITCOIN:
-                return new BitcoinObjectsManager();
+                return BitcoinManager.getInstance();
         }
         
         return null;
