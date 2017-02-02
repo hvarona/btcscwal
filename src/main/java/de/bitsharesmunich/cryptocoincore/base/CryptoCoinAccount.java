@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bitsharesmunich.cryptocoincore.base;
 
 /**
  *
- * @author javier
+ * @author Henry
  */
 public abstract class CryptoCoinAccount {
     
@@ -19,7 +14,7 @@ public abstract class CryptoCoinAccount {
         return this.seed;
     }
     
-    //public abstract CryptoCoinAccount(JSONObject json);
+    //public abstract CryptoCoinAccount getFromJson(JSONObject json);
 
     public String getId() {
         return id;
@@ -37,12 +32,11 @@ public abstract class CryptoCoinAccount {
         this.coin = coin;
     }
     
-    
-    //public abstract JSONObject toJson();   
+    //public abstract String toJsonString();   
     
     //public abstract CryptoCoinContactBook getContactBook();
     
-    public abstract String getBalance();
+    public abstract CrytpoCoinBalance getBalance();
     
     //public abstract CryptoCoinTransfer transfer(CryptoCoinAccount to, double ammount, String description, CryptoCoinTransferData additionalData);
 }

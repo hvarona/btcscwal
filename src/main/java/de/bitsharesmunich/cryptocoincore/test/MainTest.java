@@ -1,48 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bitsharesmunich.cryptocoincore.test;
 
+import de.bitsharesmunich.cryptocoincore.base.seed.CryptoCoinSeedBIP39;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
-import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccountSeed;
-import com.cryptocoincore.bitcoin.BitcoinObjectsFactory;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Transaction;
+import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.wallet.Wallet;
 /**
  *
- * @author javier
+ * @author Henry
  */
 public class MainTest {
     
     
     public void testBitcoinAccountCreation(){
-        BitcoinObjectsFactory bitcoinFactory = new BitcoinObjectsFactory(TestNet3Params.get());        
+        BitcoinManager bitcoinFactory = new BitcoinManager(TestNet3Params.get());        
         BitcoinAccount account = bitcoinFactory.newAccount();
-        System.out.println(account.getId().getJsonString());              
-    }
-    
-    public void testBitcoinAccountCreationFromString(){
-        BitcoinAccountSeed accountId = new BitcoinAccountSeed("{\"creation_time\":1482115724,\"deterministic_seed\":\"monitor swim symbol sadness illegal boring age language hand way carry amount\",\"net_id\":\"org.bitcoin.test\"}");
-        BitcoinAccount account = new BitcoinAccount(accountId);
-        
-        System.out.println("address:"+account.getAddress()+" balance:"+account.getBalance());
-        
+        //System.out.println(account.getId().getJsonString());              
     }
     
     public void testBitcoinAccountSendingCoins(){
-        BitcoinAccountSeed accountId = new BitcoinAccountSeed("{\"creation_time\":1482115724,\"deterministic_seed\":\"monitor swim symbol sadness illegal boring age language hand way carry amount\",\"net_id\":\"org.bitcoin.test\"}");
-        BitcoinAccount account = new BitcoinAccount(accountId);
-        NetworkParameters netParams = accountId.getWallet().getNetworkParameters();
-        
-        Address to = Address.fromBase58(netParams,"mkFrBPyadfMdPagjL9hu3Hd7TQZJGD4S3T");
-        Coin ammount = Coin.parseCoin("0.00000546");
-        
-        account.sendCoin(to, ammount);        
+        CryptoCoinSeedBIP39 accountSeed = new CryptoCoinSeedBIP39("{\"creation_time\":1482115724,\"deterministic_seed\":\"monitor swim symbol sadness illegal boring age language hand way carry amount\",\"net_id\":\"org.bitcoin.test\"}","");
+        BitcoinAccount account = new BitcoinAccount(accountSeed);
     }
 }
