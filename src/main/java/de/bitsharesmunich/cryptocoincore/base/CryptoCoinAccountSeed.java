@@ -19,7 +19,11 @@ import org.json.JSONObject;
  */
 public abstract class CryptoCoinAccountSeed {
 
-    private String id;
+	private String id;
+	private CryptoCoinAccountSeedType type;
+	private String Mnemonic;
+    private String additional;
+	
 
     public abstract byte[] getSeed();
 
