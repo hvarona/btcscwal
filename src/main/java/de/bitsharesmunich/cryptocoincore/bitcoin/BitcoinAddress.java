@@ -7,7 +7,7 @@ import org.bitcoinj.crypto.DeterministicKey;
 
 /**
  *
- * @author henry
+ * @author Henry
  */
 public class BitcoinAddress {
     private final DeterministicKey privateKey;

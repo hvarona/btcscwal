@@ -19,7 +19,7 @@ import org.json.JSONObject;
  */
 public abstract class AccountSeed {
 
-    private String id;
+    protected String id;
     protected SeedType type;
     protected List<String> mnemonicCode;
     protected String additional;
@@ -50,13 +50,6 @@ public abstract class AccountSeed {
 
     public void setId(String id) {
         this.id = id;
-    }
-    
-    public AccountSeed(String id, SeedType type, List<String> MnemonicCode, String additional) {
-        this.id = id;
-        this.type = type;
-        this.mnemonicCode = MnemonicCode;
-        this.additional = additional;
     }
 
     public static AccountSeed loadFromJsonString(String jsonString, String password) {

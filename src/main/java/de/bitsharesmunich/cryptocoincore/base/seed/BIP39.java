@@ -12,17 +12,23 @@ import org.bitcoinj.crypto.MnemonicCode;
  */
 public class BIP39 extends AccountSeed {
 
-    public BIP39(String id, SeedType type, List<String> MnemonicCode, String additional) {
-        super(id, type, MnemonicCode, additional);
+    public BIP39(String id, List<String> mnemonicCode, String additional) {
+        this.id = id;
+        this.type = SeedType.BIP39;
+        this.mnemonicCode = mnemonicCode;
+        this.additional = additional;
     }
-    
+
     public BIP39(String words, String passPhrase) {
-        super("",SeedType.BIP39, Arrays.asList(words.toLowerCase().split(" ")), passPhrase);
+        this.id = "";
+        this.type = SeedType.BIP39;
+        this.mnemonicCode = Arrays.asList(words.split(" "));
+        this.additional = passPhrase;
     }
 
     @Override
     public byte[] getSeed() {
         return MnemonicCode.toSeed(this.getMnemonicCode(), this.getAdditional());
     }
-    
+
 }

@@ -20,5 +20,6 @@ public class MainTest {
     public void testBitcoinAccountSendingCoins(){
         BIP39 accountSeed = new BIP39("{\"creation_time\":1482115724,\"deterministic_seed\":\"monitor swim symbol sadness illegal boring age language hand way carry amount\",\"net_id\":\"org.bitcoin.test\"}","");
         BitcoinAccount account = new BitcoinAccount(accountSeed);
+        System.out.println(account.toString());
     }
 }

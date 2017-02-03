@@ -9,7 +9,7 @@ import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 public class CryptoCoinFactory {
     
 
-    public static CryptoCoinManager getObjectManager(Coin coin){
+    public static GeneralCoinManager getGeneralCoinManager(Coin coin){
         switch(coin){
             case BITCOIN:
                 return BitcoinManager.getInstance();
