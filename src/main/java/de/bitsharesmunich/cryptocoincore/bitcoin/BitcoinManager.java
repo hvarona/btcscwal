@@ -28,6 +28,7 @@ public class BitcoinManager extends CryptoCoinManager<BitcoinAccount> {
 
     @Override
     public BitcoinAccount newAccount() {
+        
 
         return null;
     }
