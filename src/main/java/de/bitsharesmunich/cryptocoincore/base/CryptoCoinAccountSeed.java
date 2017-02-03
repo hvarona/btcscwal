@@ -20,10 +20,6 @@ import org.json.JSONObject;
 public abstract class CryptoCoinAccountSeed {
 
     private String id;
-    private final CryptoCoinSeedType type;
-
-    private final List<String> MnemonicCode;
-    private final String additional;
 
     public abstract byte[] getSeed();
 
@@ -32,7 +28,7 @@ public abstract class CryptoCoinAccountSeed {
     }
 
     public List<String> getMnemonicCode() {
-        return MnemonicCode;
+        return mnemonicCode;
     }
 
     public String getMnemonicCodeString(){
@@ -56,7 +52,7 @@ public abstract class CryptoCoinAccountSeed {
     public CryptoCoinAccountSeed(String id, CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
         this.id = id;
         this.type = type;
-        this.MnemonicCode = MnemonicCode;
+        this.mnemonicCode = MnemonicCode;
         this.additional = additional;
     }
 
@@ -109,7 +105,7 @@ public abstract class CryptoCoinAccountSeed {
             JSONObject answer = new JSONObject();
             answer.append("type", this.type);
             StringBuilder mnemonic = new StringBuilder();
-            for (String word : this.MnemonicCode) {
+            for (String word : this.mnemonicCode) {
                 mnemonic.append(word);
                 mnemonic.append(" ");
             }

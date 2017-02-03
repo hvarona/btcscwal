@@ -9,30 +9,38 @@ import org.bitcoinj.params.TestNet3Params;
  *
  * @author Henry
  */
-public class BitcoinManager extends CryptoCoinManager<BitcoinAccount>{
-    
+public class BitcoinManager extends CryptoCoinManager<BitcoinAccount> {
+
     protected NetworkParameters netParams = TestNet3Params.get();
     static private BitcoinManager instance = null;
-    
-    private BitcoinManager(){
-        
+
+    private BitcoinManager() {
+
     }
-    
-    public static BitcoinManager getInstance(){
-        if (BitcoinManager.instance == null){
+
+    public static BitcoinManager getInstance() {
+        if (BitcoinManager.instance == null) {
             BitcoinManager.instance = new BitcoinManager();
         }
-        
+
         return BitcoinManager.instance;
     }
-    
+
     @Override
-    public BitcoinAccount newAccount(){
+    public BitcoinAccount newAccount() {
         
+
         return null;
-    }   
-    
-    public BitcoinAccount getAccount(CryptoCoinAccountSeed seed){
+    }
+
+    @Override
+    public BitcoinAccount getAccount(CryptoCoinAccountSeed seed) {
         return new BitcoinAccount(seed);
     }
+
+    @Override
+    public BitcoinAccount getAccountFromJsonSeed(String jsonSeed) {
+        return new BitcoinAccount(CryptoCoinAccountSeed.loadFromJsonString(jsonSeed,""));
+    }
+
 }

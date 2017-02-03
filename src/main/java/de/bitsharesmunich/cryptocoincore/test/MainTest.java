@@ -12,7 +12,7 @@ public class MainTest {
     
     
     public void testBitcoinAccountCreation(){
-        BitcoinManager bitcoinFactory = new BitcoinManager(TestNet3Params.get());        
+        BitcoinManager bitcoinFactory = BitcoinManager.getInstance();
         BitcoinAccount account = bitcoinFactory.newAccount();
         //System.out.println(account.getId().getJsonString());              
     }
