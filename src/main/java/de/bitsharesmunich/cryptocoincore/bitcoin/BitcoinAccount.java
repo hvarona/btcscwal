@@ -1,8 +1,8 @@
 package de.bitsharesmunich.cryptocoincore.bitcoin;
 
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
-import de.bitsharesmunich.cryptocoincore.base.CrytpoCoinBalance;
+import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.Balance;
 import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
 import java.util.ArrayList;
 import org.bitcoinj.core.Address;
@@ -25,7 +25,7 @@ public class BitcoinAccount extends CryptoCoinAccount {
     private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
     
 
-    public BitcoinAccount(CryptoCoinAccountSeed seed) {
+    public BitcoinAccount(AccountSeed seed) {
         this.seed = seed;
         this.coin = BITCOIN;
         //BIP44
@@ -44,7 +44,7 @@ public class BitcoinAccount extends CryptoCoinAccount {
     }
 
     @Override
-    public CrytpoCoinBalance getBalance() {
+    public Balance getBalance() {
         return null;
     }
     

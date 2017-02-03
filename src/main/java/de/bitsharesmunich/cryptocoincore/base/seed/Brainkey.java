@@ -1,7 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.base.seed;
 
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinSeedType;
+import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.SeedType;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,13 +12,13 @@ import java.util.List;
  *
  * @author Henry
  */
-public class CryptoCoinSeedBrainkey extends CryptoCoinAccountSeed {
+public class Brainkey extends AccountSeed {
     
-    public CryptoCoinSeedBrainkey(String words, int sequence) {
-        super("", CryptoCoinSeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
+    public Brainkey(String words, int sequence) {
+        super("", SeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
     }
 
-    public CryptoCoinSeedBrainkey(String id, CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
+    public Brainkey(String id, SeedType type, List<String> MnemonicCode, String additional) {
         super(id, type, MnemonicCode, additional);
     }
 

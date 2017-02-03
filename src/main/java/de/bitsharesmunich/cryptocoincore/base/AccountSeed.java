@@ -1,7 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
-import de.bitsharesmunich.cryptocoincore.base.seed.CryptoCoinSeedBIP39;
-import de.bitsharesmunich.cryptocoincore.base.seed.CryptoCoinSeedBrainkey;
+import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
+import de.bitsharesmunich.cryptocoincore.base.seed.Brainkey;
 import de.bitsharesmunich.cryptocoincore.util.Util;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -17,16 +17,16 @@ import org.json.JSONObject;
  *
  * @author Henry
  */
-public abstract class CryptoCoinAccountSeed {
+public abstract class AccountSeed {
 
     private String id;
-    protected CryptoCoinSeedType type;
+    protected SeedType type;
     protected List<String> mnemonicCode;
     protected String additional;
     
     public abstract byte[] getSeed();
 
-    public CryptoCoinSeedType getType() {
+    public SeedType getType() {
         return type;
     }
 
@@ -52,14 +52,14 @@ public abstract class CryptoCoinAccountSeed {
         this.id = id;
     }
     
-    public CryptoCoinAccountSeed(String id, CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
+    public AccountSeed(String id, SeedType type, List<String> MnemonicCode, String additional) {
         this.id = id;
         this.type = type;
         this.mnemonicCode = MnemonicCode;
         this.additional = additional;
     }
 
-    public static CryptoCoinAccountSeed loadFromJsonString(String jsonString, String password) {
+    public static AccountSeed loadFromJsonString(String jsonString, String password) {
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
             String typeString = jsonObject.getString("type");
@@ -88,9 +88,9 @@ public abstract class CryptoCoinAccountSeed {
 
             switch (typeString) {
                 case "BIP39":
-                    return new CryptoCoinSeedBIP39(mnemonic, additional);
+                    return new BIP39(mnemonic, additional);
                 case "BrainKey":
-                    return new CryptoCoinSeedBrainkey(mnemonic, Integer.parseInt(additional));
+                    return new Brainkey(mnemonic, Integer.parseInt(additional));
                 default:
                     break;
             }
@@ -126,7 +126,7 @@ public abstract class CryptoCoinAccountSeed {
             answer.append("additional", this.additional);
             return answer.toString();
         } catch (JSONException | UnsupportedEncodingException ex) {
-            Logger.getLogger(CryptoCoinAccountSeed.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AccountSeed.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

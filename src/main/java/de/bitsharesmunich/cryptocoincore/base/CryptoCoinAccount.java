@@ -8,9 +8,9 @@ public abstract class CryptoCoinAccount {
     
     protected String id;
     protected Coin coin;
-    protected CryptoCoinAccountSeed seed;
+    protected AccountSeed seed;
     
-    public CryptoCoinAccountSeed getSeed(){
+    public AccountSeed getSeed(){
         return this.seed;
     }
     
@@ -36,7 +36,7 @@ public abstract class CryptoCoinAccount {
     
     //public abstract CryptoCoinContactBook getContactBook();
     
-    public abstract CrytpoCoinBalance getBalance();
+    public abstract Balance getBalance();
     
     //public abstract CryptoCoinTransfer transfer(CryptoCoinAccount to, double ammount, String description, CryptoCoinTransferData additionalData);
 }

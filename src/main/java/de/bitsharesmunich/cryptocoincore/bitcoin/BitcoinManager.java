@@ -1,6 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.bitcoin;
 
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinManager;
 import de.bitsharesmunich.cryptocoincore.crypto.Random;
 import org.bitcoinj.core.NetworkParameters;
@@ -36,13 +36,13 @@ public class BitcoinManager extends CryptoCoinManager<BitcoinAccount> {
     }
 
     @Override
-    public BitcoinAccount getAccount(CryptoCoinAccountSeed seed) {
+    public BitcoinAccount getAccount(AccountSeed seed) {
         return new BitcoinAccount(seed);
     }
 
     @Override
     public BitcoinAccount getAccountFromJsonSeed(String jsonSeed) {
-        return new BitcoinAccount(CryptoCoinAccountSeed.loadFromJsonString(jsonSeed,""));
+        return new BitcoinAccount(AccountSeed.loadFromJsonString(jsonSeed,""));
     }
 
 }

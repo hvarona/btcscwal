@@ -7,7 +7,7 @@ package de.bitsharesmunich.cryptocoincore.test;
 
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinFactory;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinManager;
 import java.sql.*;
@@ -64,7 +64,7 @@ public class CryptoCoreSQLite{
         }
     }
     
-    public void putCryptoCoinSeed(CryptoCoinAccountSeed seed){
+    public void putCryptoCoinSeed(AccountSeed seed){
         Statement stmt = null;
         String sql = "";
             
@@ -94,10 +94,10 @@ public class CryptoCoreSQLite{
         }
     }
     
-    public List<CryptoCoinAccountSeed> getSeeds(){
+    public List<AccountSeed> getSeeds(){
         Statement stmt = null;
         String sql = "";
-        List<CryptoCoinAccountSeed> seeds = new ArrayList<CryptoCoinAccountSeed>();    
+        List<AccountSeed> seeds = new ArrayList<AccountSeed>();    
         
         this.connect();
         if (db != null){
@@ -108,7 +108,7 @@ public class CryptoCoreSQLite{
                 ResultSet rs = stmt.executeQuery(sql);
                 
                 if (rs.getFetchSize() > 0){
-                    CryptoCoinAccountSeed seed;
+                    AccountSeed seed;
                     List<String> mnemonic;
                     CryptoCoinManager manager;
                     Coin coin;
