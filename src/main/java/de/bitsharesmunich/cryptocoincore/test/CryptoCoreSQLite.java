@@ -7,10 +7,12 @@ package de.bitsharesmunich.cryptocoincore.test;
 
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
+import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinFactory;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinManager;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -29,20 +31,31 @@ public class CryptoCoreSQLite{
             Statement stmt = null;
             Statement creationStmt = null;
             String sql = "";
+            ResultSet rs;
             try {
                 db = DriverManager.getConnection("jdbc:sqlite:test.db");
 
                 stmt = db.createStatement();
-                sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='"+CryptoCoreSQLiteContract.CryptoCoinAccount.TABLE_NAME+"';"; 
-                ResultSet rs = stmt.executeQuery(sql);
+                sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='"+CryptoCoreSQLiteContract.CryptoCoinSeed.TABLE_NAME+"';"; 
+                rs = stmt.executeQuery(sql);
                 if (rs.getFetchSize()<=0){
                     creationStmt = db.createStatement();
-                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_ACCOUNT_TABLE; 
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_SEED_TABLE; 
                     creationStmt.execute(sql);
                     creationStmt.close();
                 }
                 stmt.close();
 
+                stmt = db.createStatement();
+                sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='"+CryptoCoreSQLiteContract.CryptoCoinSeedCoin.TABLE_NAME+"';"; 
+                rs = stmt.executeQuery(sql);
+                if (rs.getFetchSize()<=0){
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_SEED_COIN_TABLE; 
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                stmt.close();
 
 
             } catch (SQLException ex) {
@@ -51,7 +64,7 @@ public class CryptoCoreSQLite{
         }
     }
     
-    public void putCryptoCoinAccount(CryptoCoinAccount account){
+    public void putCryptoCoinSeed(CryptoCoinAccountSeed seed){
         Statement stmt = null;
         String sql = "";
             
@@ -60,47 +73,57 @@ public class CryptoCoreSQLite{
             try {            
                 String newId = UUID.randomUUID().toString();
                 stmt = db.createStatement();
-                sql = "INSERT INTO "+CryptoCoreSQLiteContract.CryptoCoinAccount.TABLE_NAME+"("
-                      +CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_ID+","
-                      +CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_COIN+","
-                      +CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_SEED+""
+                sql = "INSERT INTO "+CryptoCoreSQLiteContract.CryptoCoinSeed.TABLE_NAME+"("
+                      +CryptoCoreSQLiteContract.CryptoCoinSeed.COLUMN_ID+","
+                      +CryptoCoreSQLiteContract.CryptoCoinSeed.COLUMN_TYPE+","
+                      +CryptoCoreSQLiteContract.CryptoCoinSeed.COLUMN_MNEMONIC+","
+                      +CryptoCoreSQLiteContract.CryptoCoinSeed.COLUMN_ADDITIONAL+""
                       +") VALUES ("
                       +"'"+newId+"',"
-                      +"'"+account.getCoin().name()+"',"
-                      +"'"+account.getSeed().getJsonString()+"'"
+                      +"'"+seed.getType().name()+"',"
+                      +"'"+seed.getMnemonicCodeString()+"',"
+                      +"'"+seed.getAdditional()+"'"                      
                       +")";
                 if (stmt.execute(sql)){
-                    stmt.close();                
-                    account.setId(newId);
+                    seed.setId(newId);
                 }
+                stmt.close();
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
     
-    public List<CryptoCoinAccount> getAccounts(){
+    public List<CryptoCoinAccountSeed> getSeeds(){
         Statement stmt = null;
         String sql = "";
-        List<CryptoCoinAccount> accounts = new ArrayList<CryptoCoinAccount>();    
+        List<CryptoCoinAccountSeed> seeds = new ArrayList<CryptoCoinAccountSeed>();    
         
         this.connect();
         if (db != null){
             try {            
                 stmt = db.createStatement();
-                sql = "SELECT * FROM "+CryptoCoreSQLiteContract.CryptoCoinAccount.TABLE_NAME;
+                sql = "SELECT s.*,sc.type AS coin_type FROM "+CryptoCoreSQLiteContract.CryptoCoinSeed.TABLE_NAME+" s"
+                     +" LEFT JOIN "+CryptoCoreSQLiteContract.CryptoCoinSeedCoin.TABLE_NAME+" sc ON sc."+CryptoCoreSQLiteContract.CryptoCoinSeedCoin.COLUMN_ID_SEED+" = s."+CryptoCoreSQLiteContract.CryptoCoinSeed.COLUMN_ID+" ";
                 ResultSet rs = stmt.executeQuery(sql);
                 
                 if (rs.getFetchSize() > 0){
-                    CryptoCoinAccount nextAccount;
-                    CryptoCoinManager coinManager;
+                    CryptoCoinAccountSeed seed;
+                    List<String> mnemonic;
+                    CryptoCoinManager manager;
+                    Coin coin;
                     while(rs.next()){
-                        coinManager = CryptoCoinFactory.getObjectManager(
-                                Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_COIN)));
-                        nextAccount = coinManager.getAccountFromJsonSeed(
-                                rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_SEED));
-                        nextAccount.setId(rs.getString(CryptoCoreSQLiteContract.CryptoCoinAccount.COLUMN_ID));                        
-                        accounts.add(nextAccount);
+                        coin = Coin.valueOf(rs.getString("coin_type"));
+                        manager = CryptoCoinFactory.getObjectManager(coin);
+                        
+                        mnemonic = new ArrayList<String>(Arrays.asList(rs.getString("mnemonic").split(" ")));
+                        seed = manager.getAccountFromJsonSeed() CryptoCoinAccountSeed(
+                            rs.getString("id"),
+                            mnemonic,
+                            rs.getString("additional")    
+                        );                       
+                        
+                        seeds.add(seed);
                     }
                 }
             } catch (SQLException ex) {
@@ -108,11 +131,11 @@ public class CryptoCoreSQLite{
             }                        
         }
         
-        return accounts;
+        return seeds;
     }
     
-    public void modifiyCryptoCoinAccount(CryptoCoinAccount account){
-        Statement stmt = null;
+    public void modifiyCryptoCoinAccount(CryptoCoinAccount account){ //TODO:Change this to modifyCryptoCoinSeed        
+        /*Statement stmt = null;
         String sql = "";
             
         this.connect();
@@ -129,6 +152,6 @@ public class CryptoCoreSQLite{
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }*/
     }
 }

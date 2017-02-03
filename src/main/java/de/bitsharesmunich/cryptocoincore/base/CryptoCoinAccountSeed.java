@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -18,7 +19,9 @@ import org.json.JSONObject;
  */
 public abstract class CryptoCoinAccountSeed {
 
+    private String id;
     private final CryptoCoinSeedType type;
+
     private final List<String> MnemonicCode;
     private final String additional;
 
@@ -32,11 +35,26 @@ public abstract class CryptoCoinAccountSeed {
         return MnemonicCode;
     }
 
+    public String getMnemonicCodeString(){
+        StringJoiner joiner = new StringJoiner(" ","","");
+        this.MnemonicCode.forEach(joiner::add);
+        return joiner.toString();        
+    }
+    
     public String getAdditional() {
         return additional;
     }
 
-    public CryptoCoinAccountSeed(CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public CryptoCoinAccountSeed(String id, CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
+        this.id = id;
         this.type = type;
         this.MnemonicCode = MnemonicCode;
         this.additional = additional;
