@@ -18,7 +18,7 @@ public class CryptoCoinSeedFactory {
     public static CryptoCoinManager getSeed(CryptoCoinSeedType seedType){
         switch(seedType){
             case BIP39:
-                return new CryptoCoinSeedBIP39();
+                //return new CryptoCoinSeedBIP39();
         }
         
         return null;
