@@ -4,7 +4,7 @@ package de.bitsharesmunich.cryptocoincore.test;
  *
   */
 public class CryptoCoreSQLiteContract{
-    public static class CryptoCoinSeed /*implements BaseColumns*/ {
+    public static class Seeds /*implements BaseColumns*/ {
         public static final String TABLE_NAME = "seeds";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_TYPE = "derived_seed_type";
@@ -12,7 +12,7 @@ public class CryptoCoreSQLiteContract{
         public static final String COLUMN_ADDITIONAL = "additional";
     }
     
-    public static class CryptoCoinSeedCoin /*implements BaseColumns*/ {
+    public static class Accounts /*implements BaseColumns*/ {
         public static final String TABLE_NAME = "general_accounts";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "account_name"; //this is only to tag this account
