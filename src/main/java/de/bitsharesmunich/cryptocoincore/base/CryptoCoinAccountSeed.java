@@ -20,7 +20,10 @@ import org.json.JSONObject;
 public abstract class CryptoCoinAccountSeed {
 
     private String id;
-
+    protected CryptoCoinSeedType type;
+    protected List<String> mnemonicCode;
+    protected String additional;
+    
     public abstract byte[] getSeed();
 
     public CryptoCoinSeedType getType() {
@@ -33,7 +36,7 @@ public abstract class CryptoCoinAccountSeed {
 
     public String getMnemonicCodeString(){
         StringJoiner joiner = new StringJoiner(" ","","");
-        this.MnemonicCode.forEach(joiner::add);
+        this.mnemonicCode.forEach(joiner::add);
         return joiner.toString();        
     }
     

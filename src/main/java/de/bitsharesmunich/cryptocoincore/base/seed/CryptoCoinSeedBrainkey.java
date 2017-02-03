@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -14,7 +15,11 @@ import java.util.Arrays;
 public class CryptoCoinSeedBrainkey extends CryptoCoinAccountSeed {
     
     public CryptoCoinSeedBrainkey(String words, int sequence) {
-        super(CryptoCoinSeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
+        super("", CryptoCoinSeedType.BRAINKEY, Arrays.asList(words.toLowerCase().split(" ")), Integer.toString(sequence));
+    }
+
+    public CryptoCoinSeedBrainkey(String id, CryptoCoinSeedType type, List<String> MnemonicCode, String additional) {
+        super(id, type, MnemonicCode, additional);
     }
 
     @Override
