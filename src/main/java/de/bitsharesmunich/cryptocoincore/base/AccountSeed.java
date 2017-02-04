@@ -36,7 +36,7 @@ public abstract class AccountSeed {
 
     public String getMnemonicCodeString(){
         StringJoiner joiner = new StringJoiner(" ","","");
-        this.MnemonicCode.forEach(joiner::add);
+        this.mnemonicCode.forEach(joiner::add);
         return joiner.toString();        
     }
     

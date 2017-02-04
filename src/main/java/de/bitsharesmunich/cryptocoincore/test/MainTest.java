@@ -10,7 +10,6 @@ import org.bitcoinj.params.TestNet3Params;
  */
 public class MainTest {
     
-    
     public void testBitcoinAccountCreation(){
         BitcoinManager bitcoinFactory = BitcoinManager.getInstance();
         BitcoinAccount account = bitcoinFactory.newAccount();

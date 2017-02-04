@@ -24,6 +24,11 @@ public class CryptoCoreSQLite {
 
     public void connect() {
         if (db == null) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            }
             Statement stmt = null;
             Statement creationStmt = null;
             String sql = "";
@@ -32,9 +37,9 @@ public class CryptoCoreSQLite {
                 db = DriverManager.getConnection("jdbc:sqlite:test.db");
 
                 stmt = db.createStatement();
-                sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Seeds.TABLE_NAME + "';";
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Seeds.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
-                if (rs.getFetchSize() <= 0) {
+                if (rs.getInt("count") <= 0) {
                     creationStmt = db.createStatement();
                     sql = CryptoCoreSQLiteHelper.SQL_CREATE_SEED_TABLE;
                     creationStmt.execute(sql);
@@ -43,9 +48,9 @@ public class CryptoCoreSQLite {
                 stmt.close();
 
                 stmt = db.createStatement();
-                sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + "';";
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
-                if (rs.getFetchSize() <= 0) {
+                if (rs.getInt("count") <= 0) {
                     creationStmt = db.createStatement();
                     sql = CryptoCoreSQLiteHelper.SQL_CREATE_SEED_COIN_TABLE;
                     creationStmt.execute(sql);
