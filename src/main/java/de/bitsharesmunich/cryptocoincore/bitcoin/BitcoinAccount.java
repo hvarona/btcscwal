@@ -1,9 +1,9 @@
 package de.bitsharesmunich.cryptocoincore.bitcoin;
 
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccount;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinAccountSeed;
-import de.bitsharesmunich.cryptocoincore.base.CrytpoCoinBalance;
+import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.Balance;
 import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
 import java.util.ArrayList;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -16,39 +16,46 @@ import org.bitcoinj.crypto.HDKeyDerivation;
  *
  * @author Henry
  */
-public class BitcoinAccount extends CryptoCoinAccount {
-    
+public class BitcoinAccount extends GeneralCoinAccount {
+
     private final static int ADDRESS_GAP = 20;
-    private int accountNumber = 0;
     private ArrayList<BitcoinAddress> externalKeys;
     private ArrayList<BitcoinAddress> changeKeys;
     private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-    
 
-    public BitcoinAccount(CryptoCoinAccountSeed seed) {
-        this.seed = seed;
-        this.coin = BITCOIN;
+    public BitcoinAccount(String id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
+        super(id, name, BITCOIN, seed, accountNumber, lastExternalIndex, lastChangeIndex);
+        calculateAddresses();
+    }
+    
+    public BitcoinAccount(AccountSeed seed){
+        super("", "", BITCOIN, seed, 0, 0, 0);
+        calculateAddresses();
+    }
+    
+    private void calculateAddresses(){
         //BIP44
         DeterministicKey masterKey = HDKeyDerivation.createMasterPrivateKey(seed.getSeed());
         DeterministicKey purposeKey = HDKeyDerivation.deriveChildKey(masterKey, new ChildNumber(44, true));
         DeterministicKey coinKey = HDKeyDerivation.deriveChildKey(purposeKey, new ChildNumber(0, true));
-        //TODO account number
         DeterministicKey accountKey = HDKeyDerivation.deriveChildKey(coinKey, new ChildNumber(accountNumber, true));
         DeterministicKey external = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(0, false));
         DeterministicKey change = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(1, false));
-        
-        for(int i = 0; i < ADDRESS_GAP; i++){
+
+        for (int i = 0; i < this.lastExternalIndex + ADDRESS_GAP; i++) {
             externalKeys.add(new BitcoinAddress(HDKeyDerivation.deriveChildKey(external, new ChildNumber(i, false)), param));
+        }
+        for (int i = 0; i < this.lastChangeIndex + ADDRESS_GAP; i++) {
             changeKeys.add(new BitcoinAddress(HDKeyDerivation.deriveChildKey(change, new ChildNumber(i, false)), param));
         }
     }
 
     @Override
-    public CrytpoCoinBalance getBalance() {
+    public Balance getBalance() {
         return null;
     }
-    
-    public String getNextAvaibleAddress(){
+
+    public String getNextAvaibleAddress() {
         return externalKeys.get(0).getAddress();
     }
 

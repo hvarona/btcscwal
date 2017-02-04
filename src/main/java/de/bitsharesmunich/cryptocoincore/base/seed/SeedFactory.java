@@ -6,19 +6,19 @@
 package de.bitsharesmunich.cryptocoincore.base.seed;
 
 import de.bitsharesmunich.cryptocoincore.base.Coin;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinManager;
-import de.bitsharesmunich.cryptocoincore.base.CryptoCoinSeedType;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinManager;
+import de.bitsharesmunich.cryptocoincore.base.SeedType;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 
 /**
  *
  * @author javier
  */
-public class CryptoCoinSeedFactory {
-    public static CryptoCoinManager getSeed(CryptoCoinSeedType seedType){
+public class SeedFactory {
+    public static GeneralCoinManager getSeed(SeedType seedType){
         switch(seedType){
             case BIP39:
-                //return new CryptoCoinSeedBIP39();
+                //return new BIP39();
         }
         
         return null;

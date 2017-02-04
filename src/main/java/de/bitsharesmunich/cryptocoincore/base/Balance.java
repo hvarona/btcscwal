@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author Henry
  */
-public class CrytpoCoinBalance {
+public class Balance {
     
     protected CryptoCoinType type;
     protected Date date;
