@@ -19,9 +19,10 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 public class BitcoinAccount extends GeneralCoinAccount {
 
     private final static int ADDRESS_GAP = 20;
-    private ArrayList<BitcoinAddress> externalKeys;
-    private ArrayList<BitcoinAddress> changeKeys;
-    private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+    private ArrayList<BitcoinAddress> externalKeys = new ArrayList();
+    private ArrayList<BitcoinAddress> changeKeys = new ArrayList();
+    
+    private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
 
     public BitcoinAccount(String id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
         super(id, name, BITCOIN, seed, accountNumber, lastExternalIndex, lastChangeIndex);

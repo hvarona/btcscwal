@@ -10,7 +10,7 @@ public class Random {
     public static SecureRandom getSecureRandom(){
         SecureRandomStrengthener randomStrengthener = SecureRandomStrengthener.getInstance();
         try{
-        randomStrengthener.addEntropySource(new AndroidRandomSource());
+        //randomStrengthener.addEntropySource(new AndroidRandomSource());
         }catch(Exception e){
             
         }
