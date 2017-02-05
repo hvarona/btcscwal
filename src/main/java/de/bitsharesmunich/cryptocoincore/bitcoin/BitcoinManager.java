@@ -2,8 +2,6 @@ package de.bitsharesmunich.cryptocoincore.bitcoin;
 
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinManager;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.TestNet3Params;
 
 /**
  *
@@ -11,7 +9,6 @@ import org.bitcoinj.params.TestNet3Params;
  */
 public class BitcoinManager extends GeneralCoinManager<BitcoinAccount> {
 
-    protected NetworkParameters netParams = TestNet3Params.get();
     static private BitcoinManager instance = null;
 
     private BitcoinManager() {
@@ -27,8 +24,13 @@ public class BitcoinManager extends GeneralCoinManager<BitcoinAccount> {
     }
 
     @Override
-    public BitcoinAccount newAccount(AccountSeed seed) {
-        return new BitcoinAccount(seed);
+    public BitcoinAccount newAccount(AccountSeed seed,String name) {
+        return new BitcoinAccount(seed,name);
+    }
+
+    @Override
+    public BitcoinAccount importAccount(AccountSeed seed,String name) {
+        return new BitcoinAccount(seed,name,true);
     }
 
     @Override

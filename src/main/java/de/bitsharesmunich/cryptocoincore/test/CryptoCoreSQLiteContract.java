@@ -23,14 +23,6 @@ public class CryptoCoreSQLiteContract{
         public static final String COLUMN_CHANGE_INDEX = "change_index"; // the last change address index used
     }
     
-    public static class GeneralOrphanKeys /*implements BaseColumns*/ {
-        public static final String TABLE_NAME = "general_orphan_key";
-        public static final String COLUMN_ID = "id";
-        public static final String COLUMN_NAME = "name"; //this is only to tag this key
-        public static final String COLUMN_TYPE = "coin_type";//bitcoin,litecoin,bitshares,openledger
-        public static final String COLUMN_WIF = "wif";
-    }
-    
     /**
      * TODO SLIP-48 This must be implemented in future releases
      */
@@ -43,4 +35,49 @@ public class CryptoCoreSQLiteContract{
         public static final String COLUMN_ACCOUNT_INDEX = "account_index"; // the account used
         //TODO Each graphene network has its own role types, we need to design a way of indexing each address of each role
     }
+    
+    public static class GeneralOrphanKeys /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "general_orphan_key";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_NAME = "name"; //this is only to tag this key
+        public static final String COLUMN_TYPE = "coin_type";//bitcoin,litecoin,bitshares,openledger
+        public static final String COLUMN_WIF = "wif";
+    }
+    
+    //TODO GrapheneOrphanKeys    
+    
+    public static class GeneralCoinAddress /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "general_coin_address";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ID_ACCOUNT = "id_account";
+        public static final String COLUMN_IS_CHANGE = "is_change";
+        public static final String COLUMN_INDEX = "index";
+        public static final String COLUMN_PUBLIC_KEY = "pub_key";
+    }
+    
+    public static class BitcoinInputTransaction /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "bitcoin_input_tx";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ID_ADDRESS = "id_address"; //point to a GeneralCoinAddress
+        public static final String COLUMN_ID_TRANSACTION = "id_transaction"; //point to a BitcoinTransaction
+        public static final String COLUMN_AMOUNT = "amount";
+    }
+    
+    public static class BitcoinOutputTransaction /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "bitcoin_output_tx";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ID_ADDRESS = "id_address"; //point to a GeneralCoinAddress
+        public static final String COLUMN_ID_TRANSACTION = "id_transaction"; //point to a BitcoinTransaction
+        public static final String COLUMN_AMOUNT = "amount";
+    }
+    
+    public static class BitcoinTransaction /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "bitcoin_transaction";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_BLOCK = "block"; //the number of the block where is include
+        public static final String COLUMN_DATE = "date"; //receive date
+        public static final String COLUMN_COMISSION = "comission"; //the amount of the comission
+        public static final String COLUMN_CONFIRMS = "confirm"; //the last confirm reader, this only matters when is lower that 6
+    }
+    
 }

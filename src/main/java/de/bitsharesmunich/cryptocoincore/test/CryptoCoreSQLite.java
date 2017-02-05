@@ -69,10 +69,9 @@ public class CryptoCoreSQLite {
         }
     }
 
-    public void putSeed(AccountSeed seed) {
+    public void putSeed(final AccountSeed seed) {
         Statement stmt = null;
         String sql = "";
-
         this.connect();
         if (db != null) {
             try {
@@ -99,7 +98,7 @@ public class CryptoCoreSQLite {
         }
     }
 
-    public void updateSeed(AccountSeed seed) { //TODO:Change this to modifyCryptoCoinSeed        
+    public void updateSeed(final AccountSeed seed) { //TODO:Change this to modifyCryptoCoinSeed        
         /*Statement stmt = null;
         String sql = "";
             
@@ -129,31 +128,53 @@ public class CryptoCoreSQLite {
         if (db != null) {
             try {
                 stmt = db.createStatement();
-                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.Seeds.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.Seeds.COLUMN_ID + " = " + idSeed;
+                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.Seeds.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.Seeds.COLUMN_ID + " = '" + idSeed + "'";
                 ResultSet rs = stmt.executeQuery(sql);
 
-                if (rs.getFetchSize() > 0) {
-                    AccountSeed seed;
-                    List<String> mnemonic;
-                    while (rs.next()) {
-                        String id = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ID);
-                        mnemonic = Arrays.asList(rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC).split(" "));
-                        String additional = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL);
-                        String type = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_TYPE);
-                        switch (type) {
-                            case "BIP39":
-                                seed = new BIP39(id, mnemonic, additional);
-                                break;
-                            case "BrainKey":
-                                seed = new Brainkey(id, mnemonic, additional);
-                                break;
-                            default:
-                                seed = null;
-                        }
-                        rs.close();
-                        stmt.close();
-                        return seed;
+                AccountSeed seed;
+                List<String> mnemonic;
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ID);
+                    mnemonic = Arrays.asList(rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC).split(" "));
+                    String additional = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL);
+                    String type = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_TYPE);
+                    switch (type) {
+                        case "BIP39":
+                            seed = new BIP39(id, mnemonic, additional);
+                            break;
+                        case "BrainKey":
+                            seed = new Brainkey(id, mnemonic, additional);
+                            break;
+                        default:
+                            seed = null;
                     }
+                    rs.close();
+                    stmt.close();
+                    return seed;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return null;
+    }
+
+    public String getIdSeed(AccountSeed seed) {
+        Statement stmt = null;
+        String sql = "";
+
+        this.connect();
+        if (db != null) {
+            try {
+                stmt = db.createStatement();
+                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.Seeds.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC + " = '" + seed.getMnemonicCodeString() + "' AND " + CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL + " = '" + seed.getAdditional() + "'";
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ID);
+                    rs.close();
+                    stmt.close();
+                    return id;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,27 +196,25 @@ public class CryptoCoreSQLite {
                 sql = "SELECT * FROM " + CryptoCoreSQLiteContract.Seeds.TABLE_NAME;
                 ResultSet rs = stmt.executeQuery(sql);
 
-                if (rs.getFetchSize() > 0) {
-                    AccountSeed seed;
-                    List<String> mnemonic;
-                    while (rs.next()) {
-                        String id = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ID);
-                        mnemonic = Arrays.asList(rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC).split(" "));
-                        String additional = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL);
-                        String type = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_TYPE);
-                        switch (type) {
-                            case "BIP39":
-                                seed = new BIP39(id, mnemonic, additional);
-                                break;
-                            case "BrainKey":
-                                seed = new Brainkey(id, mnemonic, additional);
-                                break;
-                            default:
-                                seed = null;
-                        }
-
-                        seeds.add(seed);
+                AccountSeed seed;
+                List<String> mnemonic;
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ID);
+                    mnemonic = Arrays.asList(rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC).split(" "));
+                    String additional = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL);
+                    String type = rs.getString(CryptoCoreSQLiteContract.Seeds.COLUMN_TYPE);
+                    switch (type) {
+                        case "BIP39":
+                            seed = new BIP39(id, mnemonic, additional);
+                            break;
+                        case "BrainKey":
+                            seed = new Brainkey(id, mnemonic, additional);
+                            break;
+                        default:
+                            seed = null;
                     }
+
+                    seeds.add(seed);
                 }
                 rs.close();
                 stmt.close();
@@ -207,7 +226,7 @@ public class CryptoCoreSQLite {
         return seeds;
     }
 
-    public void putGeneralAccount(GeneralCoinAccount account) {
+    public void putGeneralAccount(final GeneralCoinAccount account) {
         Statement stmt = null;
         String sql = "";
 
@@ -216,6 +235,14 @@ public class CryptoCoreSQLite {
             try {
                 String newId = UUID.randomUUID().toString();
                 stmt = db.createStatement();
+                String idSeed = account.getSeed().getId();
+                if (idSeed == null || idSeed.isEmpty() || idSeed.equals("null")) {
+                    idSeed = getIdSeed(account.getSeed());
+                    if (idSeed == null || idSeed.isEmpty() || idSeed.equals("null")) {
+                        putSeed(account.getSeed());
+                        idSeed = getIdSeed(account.getSeed());
+                    }
+                }
                 sql = "INSERT INTO " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + "("
                         + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID + ","
                         + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME + ","
@@ -228,11 +255,12 @@ public class CryptoCoreSQLite {
                         + "'" + newId + "',"
                         + "'" + account.getName() + "',"
                         + "'" + account.getCoin().name() + "',"
-                        + "'" + account.getSeed().getId() + "',"
+                        + "'" + idSeed + "',"
                         + account.getAccountNumber() + ","
                         + account.getLastExternalIndex() + ","
-                        + account.getLastChangeIndex() + ","
+                        + account.getLastChangeIndex()
                         + ")";
+                System.out.println(sql);
                 if (stmt.execute(sql)) {
                     account.setId(newId);
                 }
@@ -243,7 +271,7 @@ public class CryptoCoreSQLite {
         }
     }
 
-    public void updateGeneralAccount(GeneralCoinAccount account) {
+    public void updateGeneralAccount(final GeneralCoinAccount account) {
         Statement stmt = null;
         String sql = "";
 
@@ -279,33 +307,25 @@ public class CryptoCoreSQLite {
                 sql = "SELECT * FROM " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME;
                 ResultSet rs = stmt.executeQuery(sql);
 
-                if (rs.getFetchSize() > 0) {
-                    GeneralCoinAccount account;
-                    while (rs.next()) {
-                        String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
-                        String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
-                        String type = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE);
-                        String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
-                        AccountSeed seed = getSeed(idSeed);
-                        if (seed == null) {
-                            continue;
-                        }
-                        int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
-                        int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
-                        int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
-                        switch (type) {
-                            case "Bitcoin":
-                                account = CryptoCoinFactory
-                                        .getGeneralCoinManager(Coin.BITCOIN)
-                                        .getAccount(id, name, seed, accountIndex,
-                                                externalIndex, changeIndex);
-                                break;
-                            default:
-                                account = null;
-                        }
-
-                        accounts.add(account);
+                GeneralCoinAccount account;
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
+                    Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
+                    String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
+                    AccountSeed seed = getSeed(idSeed);
+                    if (seed == null) {
+                        continue;
                     }
+                    int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
+                    int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
+                    int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
+                    account = CryptoCoinFactory
+                            .getGeneralCoinManager(type)
+                            .getAccount(id, name, seed, accountIndex,
+                                    externalIndex, changeIndex);
+
+                    accounts.add(account);
                 }
                 rs.close();
                 stmt.close();
@@ -328,39 +348,37 @@ public class CryptoCoreSQLite {
                 sql = "SELECT * FROM " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME;
                 ResultSet rs = stmt.executeQuery(sql);
 
-                if (rs.getFetchSize() > 0) {
-                    GeneralCoinAccount account;
-                    while (rs.next()) {
-                        String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
-                        String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
-                        String type = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE);
-                        String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
-                        AccountSeed seed = null;
-                        for (AccountSeed search : seeds) {
-                            if (search.getId().equals(idSeed)) {
-                                seed = search;
-                                break;
-                            }
+                GeneralCoinAccount account;
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
+                    String type = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE);
+                    String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
+                    AccountSeed seed = null;
+                    for (AccountSeed search : seeds) {
+                        if (search.getId().equals(idSeed)) {
+                            seed = search;
+                            break;
                         }
-                        if (seed == null) {
-                            continue;
-                        }
-                        int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
-                        int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
-                        int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
-                        switch (type) {
-                            case "Bitcoin":
-                                account = CryptoCoinFactory
-                                        .getGeneralCoinManager(Coin.BITCOIN)
-                                        .getAccount(id, name, seed, accountIndex,
-                                                externalIndex, changeIndex);
-                                break;
-                            default:
-                                account = null;
-                        }
-
-                        accounts.add(account);
                     }
+                    if (seed == null) {
+                        continue;
+                    }
+                    int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
+                    int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
+                    int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
+                    switch (type) {
+                        case "Bitcoin":
+                            account = CryptoCoinFactory
+                                    .getGeneralCoinManager(Coin.BITCOIN)
+                                    .getAccount(id, name, seed, accountIndex,
+                                            externalIndex, changeIndex);
+                            break;
+                        default:
+                            account = null;
+                    }
+
+                    accounts.add(account);
                 }
                 rs.close();
                 stmt.close();

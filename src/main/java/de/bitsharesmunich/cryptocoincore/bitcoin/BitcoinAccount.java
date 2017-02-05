@@ -21,20 +21,28 @@ public class BitcoinAccount extends GeneralCoinAccount {
     private final static int ADDRESS_GAP = 20;
     private ArrayList<BitcoinAddress> externalKeys = new ArrayList();
     private ArrayList<BitcoinAddress> changeKeys = new ArrayList();
-    
+
     private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 
     public BitcoinAccount(String id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
         super(id, name, BITCOIN, seed, accountNumber, lastExternalIndex, lastChangeIndex);
         calculateAddresses();
     }
-    
-    public BitcoinAccount(AccountSeed seed){
-        super("", "", BITCOIN, seed, 0, 0, 0);
+
+    public BitcoinAccount(final AccountSeed seed, String name) {
+        this(seed, name, false);
+    }
+
+    public BitcoinAccount(final AccountSeed seed, String name, boolean importing) {
+        super("", name, BITCOIN, seed, 0, 0, 0);
+        if (importing) {
+            //TODO calculate the number of account
+
+        }
         calculateAddresses();
     }
-    
-    private void calculateAddresses(){
+
+    private void calculateAddresses() {
         //BIP44
         DeterministicKey masterKey = HDKeyDerivation.createMasterPrivateKey(seed.getSeed());
         DeterministicKey purposeKey = HDKeyDerivation.deriveChildKey(masterKey, new ChildNumber(44, true));
@@ -56,16 +64,32 @@ public class BitcoinAccount extends GeneralCoinAccount {
         return null;
     }
 
-    public String getNextAvaibleAddress() {
-        //Get address balances
-        return externalKeys.get(0).getAddress();
+    public String getNextRecieveAddress() {
+        //TODO Check if current address has balance
+        return externalKeys.get(lastExternalIndex).getAddressString();
     }
 
     public void sendCoin(Address to, Coin ammount) {
+
+        //Get from address
+        //Get Change address to use
+        //Put all input in transaction
+        //Put all output in transaction
+        //sign transaction
     }
 
     public Address getAddress() {
-        return null;
+        return externalKeys.get(lastExternalIndex).getAddress();
+    }
+
+    @Override
+    public String toString() {
+        return "BitcoinAccount{"
+                + "name=" + name
+                + ", idSeed=" + seed.getId()
+                + ", AccountNumber=" + accountNumber
+                + ", nextAddress=" + getNextRecieveAddress()
+                + ", param=" + param + '}';
     }
 
 }
