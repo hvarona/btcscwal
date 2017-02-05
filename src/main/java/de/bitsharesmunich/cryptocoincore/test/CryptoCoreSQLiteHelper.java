@@ -15,7 +15,7 @@ public class CryptoCoreSQLiteHelper {
             CryptoCoreSQLiteContract.Seeds.COLUMN_MNEMONIC + TYPE_TEXT + ", "+
             CryptoCoreSQLiteContract.Seeds.COLUMN_ADDITIONAL + TYPE_TEXT + ")";
     
-    public /*private*/ static final String SQL_CREATE_SEED_COIN_TABLE = "CREATE TABLE " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + " (" +
+    public /*private*/ static final String SQL_CREATE_ACCOUNT_TABLE = "CREATE TABLE " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + " (" +
             CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID + " TEXT PRIMARY KEY, " +
             CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME + TYPE_TEXT + ", " +
             CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE + TYPE_TEXT + ", " +

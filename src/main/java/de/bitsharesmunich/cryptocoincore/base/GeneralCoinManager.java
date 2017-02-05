@@ -6,7 +6,7 @@ package de.bitsharesmunich.cryptocoincore.base;
  * 
  * @author Henry
  */
-public abstract class GeneralCoinManager<T extends CryptoCoinAccount> {
+public abstract class GeneralCoinManager<T extends GeneralCoinAccount> {
     
     public abstract T newAccount(AccountSeed seed);
     

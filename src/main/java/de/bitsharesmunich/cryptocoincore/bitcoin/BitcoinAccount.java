@@ -22,7 +22,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
     private ArrayList<BitcoinAddress> externalKeys = new ArrayList();
     private ArrayList<BitcoinAddress> changeKeys = new ArrayList();
     
-    private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+    private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 
     public BitcoinAccount(String id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
         super(id, name, BITCOIN, seed, accountNumber, lastExternalIndex, lastChangeIndex);
@@ -57,6 +57,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
     }
 
     public String getNextAvaibleAddress() {
+        //Get address balances
         return externalKeys.get(0).getAddress();
     }
 
