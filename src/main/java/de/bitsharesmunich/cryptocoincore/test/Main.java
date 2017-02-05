@@ -8,6 +8,6 @@ public class Main {
         
         MainTest test = new MainTest();
         //test.testBitcoinAccountCreation();
-        test.testBitcoinAccountSendingCoins();
+        test.testBip39SeedGeneration();
     }
 }
