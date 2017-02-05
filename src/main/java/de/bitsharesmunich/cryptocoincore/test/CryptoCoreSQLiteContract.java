@@ -40,7 +40,7 @@ public class CryptoCoreSQLiteContract{
         public static final String TABLE_NAME = "general_orphan_key";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "name"; //this is only to tag this key
-        public static final String COLUMN_TYPE = "coin_type";//bitcoin,litecoin,bitshares,openledger
+        public static final String COLUMN_TYPE = "coin_type";//bitcoin,litecoin,Dash,Dogecoin
         public static final String COLUMN_WIF = "wif";
     }
     
@@ -77,7 +77,7 @@ public class CryptoCoreSQLiteContract{
         public static final String COLUMN_BLOCK = "block"; //the number of the block where is include
         public static final String COLUMN_DATE = "date"; //receive date
         public static final String COLUMN_COMISSION = "comission"; //the amount of the comission
-        public static final String COLUMN_CONFIRMS = "confirm"; //the last confirm reader, this only matters when is lower that 6
+        public static final String COLUMN_CONFIRMS = "confirm"; //the last confirm reader, this only matters when is lower than 6
     }
     
 }
