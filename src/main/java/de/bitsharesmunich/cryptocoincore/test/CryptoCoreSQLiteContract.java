@@ -46,6 +46,7 @@ public class CryptoCoreSQLiteContract{
     
     //TODO GrapheneOrphanKeys    
     
+    
     public static class GeneralCoinAddress /*implements BaseColumns*/ {
         public static final String TABLE_NAME = "general_coin_address";
         public static final String COLUMN_ID = "id";
@@ -55,28 +56,32 @@ public class CryptoCoreSQLiteContract{
         public static final String COLUMN_PUBLIC_KEY = "pub_key";
     }
     
-    public static class BitcoinInputTransaction /*implements BaseColumns*/ {
-        public static final String TABLE_NAME = "bitcoin_input_tx";
+    public static class Inputs /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "input_tx";
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_TYPE = "coin_type"; // Bitcoin,LiteCoin,Dash,DogeCoin
         public static final String COLUMN_ID_ADDRESS = "id_address"; //point to a GeneralCoinAddress
         public static final String COLUMN_ID_TRANSACTION = "id_transaction"; //point to a BitcoinTransaction
         public static final String COLUMN_AMOUNT = "amount";
     }
     
-    public static class BitcoinOutputTransaction /*implements BaseColumns*/ {
-        public static final String TABLE_NAME = "bitcoin_output_tx";
+    public static class Outputs /*implements BaseColumns*/ {
+        public static final String TABLE_NAME = "output_tx";
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_TYPE = "coin_type"; // Bitcoin,LiteCoin,Dash,DogeCoin
         public static final String COLUMN_ID_ADDRESS = "id_address"; //point to a GeneralCoinAddress
         public static final String COLUMN_ID_TRANSACTION = "id_transaction"; //point to a BitcoinTransaction
         public static final String COLUMN_AMOUNT = "amount";
     }
     
-    public static class BitcoinTransaction /*implements BaseColumns*/ {
+    public static class GeneralTransaction /*implements BaseColumns*/ {
         public static final String TABLE_NAME = "bitcoin_transaction";
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ADDRESS = "address"; 
+        public static final String COLUMN_TYPE = "coin_type"; // Bitcoin,LiteCoin,Dash,DogeCoin
         public static final String COLUMN_BLOCK = "block"; //the number of the block where is include
         public static final String COLUMN_DATE = "date"; //receive date
-        public static final String COLUMN_COMISSION = "comission"; //the amount of the comission
+        public static final String COLUMN_FEE = "fee"; //the amount of the comission
         public static final String COLUMN_CONFIRMS = "confirm"; //the last confirm reader, this only matters when is lower than 6
     }
     

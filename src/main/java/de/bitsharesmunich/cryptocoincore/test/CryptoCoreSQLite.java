@@ -295,6 +295,79 @@ public class CryptoCoreSQLite {
         }
     }
 
+    public GeneralCoinAccount getAccount(String coinType) {
+        Statement stmt;
+        String sql;
+        this.connect();
+        if (db != null) {
+            try {
+                stmt = db.createStatement();
+                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE + " = " + coinType;
+                ResultSet rs = stmt.executeQuery(sql);
+
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
+                    Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
+                    String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
+                    AccountSeed seed = getSeed(idSeed);
+                    if (seed == null) {
+                        continue;
+                    }
+                    int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
+                    int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
+                    int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
+                    GeneralCoinAccount account = CryptoCoinFactory
+                            .getGeneralCoinManager(type)
+                            .getAccount(id, name, seed, accountIndex,
+                                    externalIndex, changeIndex);
+                    rs.close();
+                    stmt.close();
+                    return account;
+                }
+                rs.close();
+                stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
+    public GeneralCoinAccount getAccount(AccountSeed seed, String coinType) {
+        Statement stmt;
+        String sql;
+        this.connect();
+        if (db != null) {
+            try {
+                stmt = db.createStatement();
+                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE + " = " + coinType + " AND " + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED + " = " + seed.getId();
+                ResultSet rs = stmt.executeQuery(sql);
+
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
+                    Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
+                    int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
+                    int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
+                    int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
+                    GeneralCoinAccount account = CryptoCoinFactory
+                            .getGeneralCoinManager(type)
+                            .getAccount(id, name, seed, accountIndex,
+                                    externalIndex, changeIndex);
+                    rs.close();
+                    stmt.close();
+                    return account;
+                }
+                rs.close();
+                stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
     public List<GeneralCoinAccount> getAccounts() {
         Statement stmt;
         String sql;
