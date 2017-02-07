@@ -35,9 +35,13 @@ public abstract class AccountSeed {
     }
 
     public String getMnemonicCodeString(){
-        StringJoiner joiner = new StringJoiner(" ","","");
-        this.mnemonicCode.forEach(joiner::add);
-        return joiner.toString();        
+        StringBuilder answer = new StringBuilder();
+        for(String word : mnemonicCode){
+            answer.append(word);
+            answer.append(" ");
+        }
+        answer.deleteCharAt(answer.length()-1);
+        return answer.toString();
     }
     
     public String getAdditional() {

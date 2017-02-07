@@ -3,8 +3,10 @@ package de.bitsharesmunich.cryptocoincore.bitcoin;
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.Balance;
 import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
@@ -19,8 +21,11 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 public class BitcoinAccount extends GeneralCoinAccount {
 
     private final static int ADDRESS_GAP = 20;
-    private ArrayList<BitcoinAddress> externalKeys = new ArrayList();
-    private ArrayList<BitcoinAddress> changeKeys = new ArrayList();
+    private DeterministicKey accountKey;
+    private DeterministicKey externalKey;
+    private DeterministicKey changeKey;
+    private HashMap<Integer, GeneralCoinAddress> externalKeys = new HashMap();
+    private HashMap<Integer, GeneralCoinAddress> changeKeys = new HashMap();
 
     private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 
@@ -47,15 +52,18 @@ public class BitcoinAccount extends GeneralCoinAccount {
         DeterministicKey masterKey = HDKeyDerivation.createMasterPrivateKey(seed.getSeed());
         DeterministicKey purposeKey = HDKeyDerivation.deriveChildKey(masterKey, new ChildNumber(44, true));
         DeterministicKey coinKey = HDKeyDerivation.deriveChildKey(purposeKey, new ChildNumber(0, true));
-        DeterministicKey accountKey = HDKeyDerivation.deriveChildKey(coinKey, new ChildNumber(accountNumber, true));
-        DeterministicKey external = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(0, false));
-        DeterministicKey change = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(1, false));
+        accountKey = HDKeyDerivation.deriveChildKey(coinKey, new ChildNumber(accountNumber, true));
+        externalKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(0, false));
+        changeKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(1, false));
+    }
 
-        for (int i = 0; i < this.lastExternalIndex + ADDRESS_GAP; i++) {
-            externalKeys.add(new BitcoinAddress(HDKeyDerivation.deriveChildKey(external, new ChildNumber(i, false)), param));
-        }
-        for (int i = 0; i < this.lastChangeIndex + ADDRESS_GAP; i++) {
-            changeKeys.add(new BitcoinAddress(HDKeyDerivation.deriveChildKey(change, new ChildNumber(i, false)), param));
+    public void loadAddresses(List<GeneralCoinAddress> addresses) {
+        for (GeneralCoinAddress address : addresses) {
+            if (address.isIsChange()) {
+                changeKeys.put(address.getIndex(), address);
+            } else {
+                externalKeys.put(address.getIndex(), address);
+            }
         }
     }
 
@@ -66,10 +74,13 @@ public class BitcoinAccount extends GeneralCoinAccount {
 
     public String getNextRecieveAddress() {
         //TODO Check if current address has balance
-        return externalKeys.get(lastExternalIndex).getAddressString();
+        if (!externalKeys.containsKey(lastExternalIndex)) {
+            externalKeys.put(lastExternalIndex, new GeneralCoinAddress(this, false, lastExternalIndex, HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(lastExternalIndex, false))));
+        }
+        return externalKeys.get(lastExternalIndex).getAddressString(param);
     }
 
-    public void sendCoin(Address to, Coin ammount) {
+    public void sendCoin(Address to, Coin amount) {
 
         //Get from address
         //Get Change address to use
@@ -79,7 +90,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
     }
 
     public Address getAddress() {
-        return externalKeys.get(lastExternalIndex).getAddress();
+        return externalKeys.get(lastExternalIndex).getAddress(param);
     }
 
     @Override

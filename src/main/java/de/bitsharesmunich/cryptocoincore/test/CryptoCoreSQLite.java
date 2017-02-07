@@ -62,6 +62,66 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
+                
+                stmt = db.createStatement();
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralOrphanKeys.TABLE_NAME + "';";
+                rs = stmt.executeQuery(sql);
+                if (rs.getInt("count") <= 0) {
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_GENERAL_ORPHAN_KEY_TABLE;
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                rs.close();
+                stmt.close();
+                
+                stmt = db.createStatement();
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralCoinAddress.TABLE_NAME + "';";
+                rs = stmt.executeQuery(sql);
+                if (rs.getInt("count") <= 0) {
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_GENERAL_ADDRESS_TABLE;
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                rs.close();
+                stmt.close();
+                
+                stmt = db.createStatement();
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralTransaction.TABLE_NAME + "';";
+                rs = stmt.executeQuery(sql);
+                if (rs.getInt("count") <= 0) {
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_GENERAL_TRANSACTION_TABLE;
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                rs.close();
+                stmt.close();
+                
+                stmt = db.createStatement();
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Inputs.TABLE_NAME + "';";
+                rs = stmt.executeQuery(sql);
+                if (rs.getInt("count") <= 0) {
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_INPUT_TX_TABLE;
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                rs.close();
+                stmt.close();
+                
+                stmt = db.createStatement();
+                sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Outputs.TABLE_NAME + "';";
+                rs = stmt.executeQuery(sql);
+                if (rs.getInt("count") <= 0) {
+                    creationStmt = db.createStatement();
+                    sql = CryptoCoreSQLiteHelper.SQL_CREATE_OUTPUT_TX_TABLE;
+                    creationStmt.execute(sql);
+                    creationStmt.close();
+                }
+                rs.close();
+                stmt.close();
 
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
