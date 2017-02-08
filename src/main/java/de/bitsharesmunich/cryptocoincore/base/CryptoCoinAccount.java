@@ -1,5 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
+import java.util.List;
+
 /**
  *
  * @author Henry
@@ -17,7 +19,7 @@ public abstract class CryptoCoinAccount {
         this.coin = coin;
         this.seed = seed;
     }
-    
+
 
     public AccountSeed getSeed() {
         return this.seed;
@@ -47,9 +49,6 @@ public abstract class CryptoCoinAccount {
         this.coin = coin;
     }
 
-    //public abstract String toJsonString();   
-    //public abstract CryptoCoinContactBook getContactBook();
-    public abstract Balance getBalance();
-
-    //public abstract CryptoCoinTransfer transfer(CryptoCoinAccount to, double ammount, String description, CryptoCoinTransferData additionalData);
+    public abstract List<Balance> getBalance();
+    
 }

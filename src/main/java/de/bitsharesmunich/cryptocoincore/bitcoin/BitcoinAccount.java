@@ -5,13 +5,13 @@ import de.bitsharesmunich.cryptocoincore.base.Balance;
 import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.ChildNumber;
-import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 
 /**
@@ -21,17 +21,13 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 public class BitcoinAccount extends GeneralCoinAccount {
 
     private final static int ADDRESS_GAP = 20;
-    private DeterministicKey accountKey;
-    private DeterministicKey externalKey;
-    private DeterministicKey changeKey;
-    private HashMap<Integer, GeneralCoinAddress> externalKeys = new HashMap();
-    private HashMap<Integer, GeneralCoinAddress> changeKeys = new HashMap();
+
 
     private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 
     public BitcoinAccount(String id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
         super(id, name, BITCOIN, seed, accountNumber, lastExternalIndex, lastChangeIndex);
-        calculateAddresses();
+
     }
 
     public BitcoinAccount(final AccountSeed seed, String name) {
@@ -42,19 +38,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
         super("", name, BITCOIN, seed, 0, 0, 0);
         if (importing) {
             //TODO calculate the number of account
-
         }
-        calculateAddresses();
-    }
-
-    private void calculateAddresses() {
-        //BIP44
-        DeterministicKey masterKey = HDKeyDerivation.createMasterPrivateKey(seed.getSeed());
-        DeterministicKey purposeKey = HDKeyDerivation.deriveChildKey(masterKey, new ChildNumber(44, true));
-        DeterministicKey coinKey = HDKeyDerivation.deriveChildKey(purposeKey, new ChildNumber(0, true));
-        accountKey = HDKeyDerivation.deriveChildKey(coinKey, new ChildNumber(accountNumber, true));
-        externalKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(0, false));
-        changeKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(1, false));
     }
 
     public void loadAddresses(List<GeneralCoinAddress> addresses) {
@@ -68,14 +52,36 @@ public class BitcoinAccount extends GeneralCoinAccount {
     }
 
     @Override
-    public Balance getBalance() {
-        return null;
+    public List<Balance> getBalance() {
+        long amount = 0;
+        for (GeneralCoinAddress key : externalKeys.values()) {
+            amount += key.getBalance();
+        }
+
+        for (GeneralCoinAddress key : changeKeys.values()) {
+            amount += key.getBalance();
+        }
+
+        Balance balance = new Balance();
+        balance.setType(BITCOIN);
+        balance.setDate(new Date());
+        balance.setAmmount(amount);
+        List<Balance> balances = new ArrayList();
+        balances.add(balance);
+        return balances;
     }
 
     public String getNextRecieveAddress() {
-        //TODO Check if current address has balance
         if (!externalKeys.containsKey(lastExternalIndex)) {
             externalKeys.put(lastExternalIndex, new GeneralCoinAddress(this, false, lastExternalIndex, HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(lastExternalIndex, false))));
+        }
+
+        //Finding the next unused address
+        while(externalKeys.get(lastExternalIndex).getInputTransaction().size()>0){
+            ++lastExternalIndex;
+            if (!externalKeys.containsKey(lastExternalIndex)) {
+                externalKeys.put(lastExternalIndex, new GeneralCoinAddress(this, false, lastExternalIndex, HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(lastExternalIndex, false))));
+            }
         }
         return externalKeys.get(lastExternalIndex).getAddressString(param);
     }
