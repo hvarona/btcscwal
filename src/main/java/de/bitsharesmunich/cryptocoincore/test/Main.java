@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         MainTest test = new MainTest();
-        CryptoCoreSQLite db = new CryptoCoreSQLite();
+        /*CryptoCoreSQLite db = new CryptoCoreSQLite();
         db.connect();
         
         List<AccountSeed> seeds = db.getSeeds();
@@ -29,6 +29,7 @@ public class Main {
         //test.testBitcoinAccountCreation();
         for(int i = 0; i< 20; i++){
             test.testBip39SeedGeneration();
-        }
+        }*/
+        test.testSocketConnection();
     }
 }
