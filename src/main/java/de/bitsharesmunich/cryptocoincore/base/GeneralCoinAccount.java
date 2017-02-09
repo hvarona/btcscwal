@@ -1,5 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
+import com.google.gson.JsonObject;
 import de.bitsharesmunich.cryptocoincore.test.CryptoCoreSQLite;
 import java.util.HashMap;
 import org.bitcoinj.crypto.ChildNumber;
@@ -10,7 +11,8 @@ import org.bitcoinj.crypto.HDKeyDerivation;
  *
  * @author Henry
  */
-public abstract class GeneralCoinAccount extends CryptoCoinAccount{
+public abstract class GeneralCoinAccount extends CryptoCoinAccount {
+
     protected int accountNumber;
     protected int lastExternalIndex;
     protected int lastChangeIndex;
@@ -38,41 +40,41 @@ public abstract class GeneralCoinAccount extends CryptoCoinAccount{
         changeKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(1, false));
     }
 
-    public void calculateGapExternal(){
-        if(externalKey == null){
+    public void calculateGapExternal() {
+        if (externalKey == null) {
             calculateAddresses();
         }
-        for(int i = 0; i < lastExternalIndex;i++){
-            if(!externalKeys.containsKey(i)){
-                externalKeys.put(i,new GeneralCoinAddress(this,false,i,HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(0, false))));
+        for (int i = 0; i < lastExternalIndex; i++) {
+            if (!externalKeys.containsKey(i)) {
+                externalKeys.put(i, new GeneralCoinAddress(this, false, i, HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(0, false))));
             }
         }
     }
 
-    public void calculateGapChange(){
-        if(changeKey == null){
+    public void calculateGapChange() {
+        if (changeKey == null) {
             calculateAddresses();
         }
-        for(int i = 0; i < lastChangeIndex;i++){
-            if(!changeKeys.containsKey(i)){
-                changeKeys.put(i,new GeneralCoinAddress(this,false,i,HDKeyDerivation.deriveChildKey(changeKey, new ChildNumber(0, false))));
+        for (int i = 0; i < lastChangeIndex; i++) {
+            if (!changeKeys.containsKey(i)) {
+                changeKeys.put(i, new GeneralCoinAddress(this, false, i, HDKeyDerivation.deriveChildKey(changeKey, new ChildNumber(0, false))));
             }
         }
     }
 
-    public void saveAddresses(CryptoCoreSQLite db){
-        for(GeneralCoinAddress externalAddress : externalKeys.values()){
-            if(externalAddress.getId() == null || externalAddress.getId().isEmpty() || externalAddress.getId().equalsIgnoreCase("null")){
+    public void saveAddresses(CryptoCoreSQLite db) {
+        for (GeneralCoinAddress externalAddress : externalKeys.values()) {
+            if (externalAddress.getId() == null || externalAddress.getId().isEmpty() || externalAddress.getId().equalsIgnoreCase("null")) {
                 //db.putGeneralCoinAddress(externalAddress);
-            }else{
+            } else {
                 //db.updateGeneralCoinAddress(externalAddress);
             }
         }
 
-        for(GeneralCoinAddress changeAddress : changeKeys.values()){
-            if(changeAddress.getId() == null || changeAddress.getId().isEmpty() || changeAddress.getId().equalsIgnoreCase("null")){
+        for (GeneralCoinAddress changeAddress : changeKeys.values()) {
+            if (changeAddress.getId() == null || changeAddress.getId().isEmpty() || changeAddress.getId().equalsIgnoreCase("null")) {
                 //db.putGeneralCoinAddress(changeAddress);
-            }else{
+            } else {
                 //db.updateGeneralCoinAddress(changeAddress);
             }
         }
@@ -89,5 +91,15 @@ public abstract class GeneralCoinAccount extends CryptoCoinAccount{
     public int getLastChangeIndex() {
         return lastChangeIndex;
     }
-    
+
+    public JsonObject toJson() {
+        JsonObject answer = new JsonObject();
+        answer.addProperty("type", this.coin.name());
+        answer.addProperty("name", this.name);
+        answer.addProperty("accountNumber", this.accountNumber);
+        answer.addProperty("changeIndex", this.lastChangeIndex);
+        answer.addProperty("externalIndex", this.lastExternalIndex);
+        return answer;
+    }
+
 }

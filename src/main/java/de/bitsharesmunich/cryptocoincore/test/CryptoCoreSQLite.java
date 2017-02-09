@@ -62,7 +62,7 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
-                
+
                 stmt = db.createStatement();
                 sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralOrphanKeys.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
@@ -74,7 +74,7 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
-                
+
                 stmt = db.createStatement();
                 sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralCoinAddress.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
@@ -86,7 +86,7 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
-                
+
                 stmt = db.createStatement();
                 sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.GeneralTransaction.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
@@ -98,7 +98,7 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
-                
+
                 stmt = db.createStatement();
                 sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Inputs.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
@@ -110,7 +110,7 @@ public class CryptoCoreSQLite {
                 }
                 rs.close();
                 stmt.close();
-                
+
                 stmt = db.createStatement();
                 sql = "SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name='" + CryptoCoreSQLiteContract.Outputs.TABLE_NAME + "';";
                 rs = stmt.executeQuery(sql);
@@ -129,7 +129,7 @@ public class CryptoCoreSQLite {
         }
     }
 
-    public void putSeed(final AccountSeed seed) {
+    public String putSeed(final AccountSeed seed) {
         Statement stmt = null;
         String sql = "";
         this.connect();
@@ -152,10 +152,12 @@ public class CryptoCoreSQLite {
                     seed.setId(newId);
                 }
                 stmt.close();
+                return newId;
             } catch (SQLException ex) {
                 Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return null;
     }
 
     public void updateSeed(final AccountSeed seed) { //TODO:Change this to modifyCryptoCoinSeed        
@@ -426,6 +428,42 @@ public class CryptoCoreSQLite {
             }
         }
         return null;
+    }
+
+    public List<GeneralCoinAccount> getAccounts(AccountSeed seed) {
+        Statement stmt;
+        String sql;
+        List<GeneralCoinAccount> accounts = new ArrayList();
+
+        this.connect();
+        if (db != null) {
+            try {
+                stmt = db.createStatement();
+                sql = "SELECT * FROM " + CryptoCoreSQLiteContract.GeneralAccounts.TABLE_NAME + " WHERE " + CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED + " = " + seed.getId();
+                ResultSet rs = stmt.executeQuery(sql);
+
+                GeneralCoinAccount account;
+                while (rs.next()) {
+                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
+                    Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
+                    int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
+                    int changeIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_CHANGE_INDEX);
+                    int externalIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_EXTERNAL_INDEX);
+                    account = CryptoCoinFactory
+                            .getGeneralCoinManager(type)
+                            .getAccount(id, name, seed, accountIndex,
+                                    externalIndex, changeIndex);
+
+                    accounts.add(account);
+                }
+                rs.close();
+                stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CryptoCoreSQLite.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return accounts;
     }
 
     public List<GeneralCoinAccount> getAccounts() {

@@ -1,5 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
+import com.google.gson.JsonObject;
 import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.base.seed.Brainkey;
 import de.bitsharesmunich.cryptocoincore.util.Util;
@@ -34,16 +35,16 @@ public abstract class AccountSeed {
         return mnemonicCode;
     }
 
-    public String getMnemonicCodeString(){
+    public String getMnemonicCodeString() {
         StringBuilder answer = new StringBuilder();
-        for(String word : mnemonicCode){
+        for (String word : mnemonicCode) {
             answer.append(word);
             answer.append(" ");
         }
-        answer.deleteCharAt(answer.length()-1);
+        answer.deleteCharAt(answer.length() - 1);
         return answer.toString();
     }
-    
+
     public String getAdditional() {
         return additional;
     }
@@ -56,23 +57,22 @@ public abstract class AccountSeed {
         this.id = id;
     }
 
-    public static AccountSeed loadFromJsonString(String jsonString, String password) {
+    public static AccountSeed fromJson(JsonObject jsonObject, String password) {
         try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            String typeString = jsonObject.getString("type");
+            String typeString = jsonObject.get("type").getAsString();
             String mnemonic;
             if (jsonObject.has("mnemonic")) {
-                mnemonic = jsonObject.getString("mnemonic");
+                mnemonic = jsonObject.get("mnemonic").getAsString();
             } else {
 
-                byte[] encKey_enc = new BigInteger(jsonObject.getString("encryption_key"), 16).toByteArray();
+                byte[] encKey_enc = new BigInteger(jsonObject.get("encryption_key").getAsString(), 16).toByteArray();
                 byte[] temp = new byte[encKey_enc.length - (encKey_enc[0] == 0 ? 1 : 0)];
                 System.arraycopy(encKey_enc, (encKey_enc[0] == 0 ? 1 : 0), temp, 0, temp.length);
                 byte[] encKey = Util.decryptAES(temp, password.getBytes("UTF-8"));
                 temp = new byte[encKey.length];
                 System.arraycopy(encKey, 0, temp, 0, temp.length);
 
-                byte[] encBrain = new BigInteger(jsonObject.getString("encrypted_brainkey"), 16).toByteArray();
+                byte[] encBrain = new BigInteger(jsonObject.get("encrypted_mnemonic").getAsString(), 16).toByteArray();
                 while (encBrain[0] == 0) {
                     byte[] temp2 = new byte[encBrain.length - 1];
                     System.arraycopy(encBrain, 1, temp2, 0, temp2.length);
@@ -81,7 +81,7 @@ public abstract class AccountSeed {
                 mnemonic = new String((Util.decryptAES(encBrain, temp)), "UTF-8");
 
             }
-            String additional = jsonObject.getString("additional");
+            String additional = jsonObject.get("additional").getAsString();
 
             switch (typeString) {
                 case "BIP39":
@@ -91,19 +91,16 @@ public abstract class AccountSeed {
                 default:
                     break;
             }
-        } catch (JSONException | UnsupportedEncodingException | NumberFormatException e) {
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(AccountSeed.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public String getJsonString() {
-        return this.getJsonString("");
-    }
-
-    public String getJsonString(String password) {
+    public JsonObject toJson(String password) {
         try {
-            JSONObject answer = new JSONObject();
-            answer.append("type", this.type);
+            JsonObject answer = new JsonObject();
+            answer.addProperty("type", this.type.name());
             StringBuilder mnemonic = new StringBuilder();
             for (String word : this.mnemonicCode) {
                 mnemonic.append(word);
@@ -111,19 +108,19 @@ public abstract class AccountSeed {
             }
             mnemonic.deleteCharAt(mnemonic.length() - 1);
             if (password.isEmpty()) {
-                answer.append("mnemonic", mnemonic);
+                answer.addProperty("mnemonic", getMnemonicCodeString());
             } else {
                 byte[] encKey = new byte[32];
                 new SecureRandom().nextBytes(encKey);
                 byte[] encKey_enc = Util.encryptAES(encKey, password.getBytes("UTF-8"));
                 byte[] encMnem = Util.encryptAES(mnemonic.toString().getBytes("ASCII"), encKey);
-                answer.append("encryption_key", Util.byteToString(encKey_enc));
-                answer.append("encrypted_mnemonic", Util.byteToString(encMnem));
+                answer.addProperty("encryption_key", Util.byteToString(encKey_enc));
+                answer.addProperty("encrypted_mnemonic", Util.byteToString(encMnem));
             }
-            answer.append("additional", this.additional);
-            return answer.toString();
-        } catch (JSONException | UnsupportedEncodingException ex) {
-            Logger.getLogger(AccountSeed.class.getName()).log(Level.SEVERE, null, ex);
+            answer.addProperty("additional", this.additional);
+            return answer;
+        } catch (UnsupportedEncodingException ex) {
+
         }
         return null;
     }
