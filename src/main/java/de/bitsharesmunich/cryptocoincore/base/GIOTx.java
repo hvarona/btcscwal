@@ -9,8 +9,10 @@ public class GIOTx {
     private String id;
     private Coin type;
     private GeneralCoinAddress address;
+    private String addressString;
     private GeneralTransaction transaction;
     private long amount;
+    private boolean isOut;
 
     public String getId() {
         return id;
@@ -50,6 +52,22 @@ public class GIOTx {
 
     public void setAmount(long amount) {
         this.amount = amount;
+    }
+
+    public boolean isIsOut() {
+        return isOut;
+    }
+
+    public void setIsOut(boolean isOut) {
+        this.isOut = isOut;
+    }
+
+    public String getAddressString() {
+        return addressString;
+    }
+
+    public void setAddressString(String addressString) {
+        this.addressString = addressString;
     }
 
 }

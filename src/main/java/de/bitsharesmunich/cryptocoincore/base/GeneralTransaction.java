@@ -11,7 +11,7 @@ import java.util.List;
 public class GeneralTransaction {
 
     private String id;
-    private String address;
+    private String txid;
     private Coin type;
     private long block;
     private long fee;
@@ -29,12 +29,12 @@ public class GeneralTransaction {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public String getTxid() {
+        return txid;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setTxid(String txid) {
+        this.txid = txid;
     }
 
     public Coin getType() {
@@ -75,6 +75,22 @@ public class GeneralTransaction {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public List<GIOTx> getTxInputs() {
+        return txInputs;
+    }
+
+    public void setTxInputs(List<GIOTx> txInputs) {
+        this.txInputs = txInputs;
+    }
+
+    public List<GIOTx> getTxOutputs() {
+        return txOutputs;
+    }
+
+    public void setTxOutputs(List<GIOTx> txOutputs) {
+        this.txOutputs = txOutputs;
     }
 
 }

@@ -104,5 +104,5 @@ public class GeneralCoinAddress {
 
         return answer;
     }
-
+    
 }

@@ -22,12 +22,12 @@ public class Main {
         System.out.println("\r\n\r\nDB accounts: \r\n");
         for(CryptoCoinAccount account : accounts){
             System.out.println(account.toString());
-        }
+        }*/
         
         
         
         //test.testBitcoinAccountCreation();
-        for(int i = 0; i< 20; i++){
+        /*for(int i = 0; i< 20; i++){
             test.testBip39SeedGeneration();
         }*/
         test.testSocketConnection();

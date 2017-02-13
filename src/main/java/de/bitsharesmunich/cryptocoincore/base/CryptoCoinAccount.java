@@ -20,7 +20,6 @@ public abstract class CryptoCoinAccount {
         this.seed = seed;
     }
 
-
     public AccountSeed getSeed() {
         return this.seed;
     }
