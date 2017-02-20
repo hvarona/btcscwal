@@ -30,6 +30,7 @@ public class Main {
         /*for(int i = 0; i< 20; i++){
             test.testBip39SeedGeneration();
         }*/
-        test.testSocketConnection();
+        //test.testSocketConnection();
+        test.testSendTransaction();
     }
 }
