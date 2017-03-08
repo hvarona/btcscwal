@@ -3,9 +3,13 @@ package de.bitsharesmunich.cryptocoincore.test;
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.CryptoCoinFactory;
+import de.bitsharesmunich.cryptocoincore.base.GTxIO;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
+import de.bitsharesmunich.cryptocoincore.base.GeneralTransaction;
 import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.base.seed.Brainkey;
+import de.bitsharesmunich.cryptocoincore.crypto.Random;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -295,7 +299,7 @@ public class CryptoCoreSQLite {
         this.connect();
         if (db != null) {
             try {
-                String newId = UUID.randomUUID().toString();
+                long newId = Random.getSecureRandom().nextLong();
                 stmt = db.createStatement();
                 String idSeed = account.getSeed().getId();
                 if (idSeed == null || idSeed.isEmpty() || idSeed.equals("null")) {
@@ -368,7 +372,7 @@ public class CryptoCoreSQLite {
                 ResultSet rs = stmt.executeQuery(sql);
 
                 while (rs.next()) {
-                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    long id = rs.getLong(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
                     String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
                     Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
                     String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
@@ -407,7 +411,7 @@ public class CryptoCoreSQLite {
                 ResultSet rs = stmt.executeQuery(sql);
 
                 while (rs.next()) {
-                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    long id = rs.getLong(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
                     String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
                     Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
                     int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
@@ -444,7 +448,7 @@ public class CryptoCoreSQLite {
 
                 GeneralCoinAccount account;
                 while (rs.next()) {
-                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    long id = rs.getLong(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
                     String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
                     Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
                     int accountIndex = rs.getInt(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ACCOUNT_INDEX);
@@ -480,7 +484,7 @@ public class CryptoCoreSQLite {
 
                 GeneralCoinAccount account;
                 while (rs.next()) {
-                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    long id = rs.getLong(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
                     String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
                     Coin type = Coin.valueOf(rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE));
                     String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
@@ -521,7 +525,7 @@ public class CryptoCoreSQLite {
 
                 GeneralCoinAccount account;
                 while (rs.next()) {
-                    String id = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
+                    long id = rs.getLong(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID);
                     String name = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_NAME);
                     String type = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_TYPE);
                     String idSeed = rs.getString(CryptoCoreSQLiteContract.GeneralAccounts.COLUMN_ID_SEED);
@@ -559,5 +563,56 @@ public class CryptoCoreSQLite {
         }
 
         return accounts;
+    }
+    
+    public long putGeneralCoinAddress(final GeneralCoinAddress address){
+        return -1;
+    }
+
+    public boolean updateGeneralCoinAddress(GeneralCoinAddress address){
+        return false;
+    }
+
+    public List<GeneralCoinAddress> getGeneralCoinAddress(GeneralCoinAccount account){
+        List<GeneralCoinAddress> addrs = new ArrayList();
+        return addrs;
+    }
+
+    // Transaction Section
+
+    private long putGTxI(final GTxIO gtxi, GeneralTransaction transaction){
+        return -1;
+    }
+
+    private long putGTxO(final GTxIO gtxo, GeneralTransaction transaction){
+        return -1;
+    }
+
+    public long getGeneralTransactionId(final GeneralTransaction transaction){
+        
+        return -1;
+    }
+
+    public long putGeneralTransaction(final GeneralTransaction transaction){
+        return -1;
+    }
+
+    public boolean updateGeneralTransaction(GeneralTransaction transaction){
+        return false;
+    }
+
+    private List<GTxIO> getGTxI(GeneralTransaction transaction, final GeneralCoinAccount account){
+        List<GTxIO> gtxis = new ArrayList();
+        return gtxis;
+    }
+
+    private List<GTxIO> getGTxO(GeneralTransaction transaction, final GeneralCoinAccount account){
+        List<GTxIO> gtxos = new ArrayList();
+        return gtxos;
+    }
+
+    public List<GeneralTransaction> getGeneralTransactionByAccount(final GeneralCoinAccount account){
+        List<GeneralTransaction> transactions = new ArrayList();
+        return transactions;
     }
 }

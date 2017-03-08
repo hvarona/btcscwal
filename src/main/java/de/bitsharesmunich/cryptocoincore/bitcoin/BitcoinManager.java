@@ -24,17 +24,17 @@ public class BitcoinManager extends GeneralCoinManager<BitcoinAccount> {
     }
 
     @Override
-    public BitcoinAccount newAccount(AccountSeed seed,String name) {
-        return new BitcoinAccount(seed,name);
+    public BitcoinAccount newAccount(AccountSeed seed, String name) {
+        return new BitcoinAccount(seed, name);
     }
 
     @Override
-    public BitcoinAccount importAccount(AccountSeed seed,String name) {
-        return new BitcoinAccount(seed,name,true);
+    public BitcoinAccount importAccount(AccountSeed seed, String name) {
+        return new BitcoinAccount(seed, name, true);
     }
 
     @Override
-    public BitcoinAccount getAccount(String id, String name, AccountSeed seed, int accountIndex, int externalIndex, int changeIndex) {
+    public BitcoinAccount getAccount(long id, String name, AccountSeed seed, int accountIndex, int externalIndex, int changeIndex) {
         return new BitcoinAccount(id, name, seed, accountIndex, externalIndex, changeIndex);
     }
 

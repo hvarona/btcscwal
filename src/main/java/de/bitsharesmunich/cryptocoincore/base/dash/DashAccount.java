@@ -1,11 +1,17 @@
-package de.bitsharesmunich.cryptocoincore.bitcoin;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.bitsharesmunich.cryptocoincore.base.dash;
 
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.Balance;
-import static de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN;
+import static de.bitsharesmunich.cryptocoincore.base.Coin.DASH;
+import org.bitcoinj.core.CustomNetworkParameters;
 import de.bitsharesmunich.cryptocoincore.base.GTxIO;
-import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.test.CryptoCoreSQLite;
 import de.bitsharesmunich.cryptocoincore.util.Util;
 import java.util.ArrayList;
@@ -23,24 +29,25 @@ import org.bitcoinj.script.Script;
 
 /**
  *
- * @author Henry
+ * @author henry
  */
-public class BitcoinAccount extends GeneralCoinAccount {
+public class DashAccount extends GeneralCoinAccount{
+    
+    private NetworkParameters param = CustomNetworkParameters.fromCoin(DASH);
+    
+    private static final int DASH_COIN_NUMBER = 5;
 
-    private NetworkParameters param = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-    private static final int BITCOIN_COIN_NUMBER = 0;
-
-    BitcoinAccount(long id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
-        super(id, name, BITCOIN, seed, BITCOIN_COIN_NUMBER, accountNumber, lastExternalIndex, lastChangeIndex);
+    DashAccount(long id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
+        super(id, name, DASH, seed, DASH_COIN_NUMBER, accountNumber, lastExternalIndex, lastChangeIndex);
 
     }
 
-    public BitcoinAccount(final AccountSeed seed, String name) {
+    public DashAccount(final AccountSeed seed, String name) {
         this(seed, name, false);
     }
 
-    BitcoinAccount(final AccountSeed seed, String name, boolean importing) {
-        super(-1, name, BITCOIN, seed, BITCOIN_COIN_NUMBER, 0, 0, 0);
+    DashAccount(final AccountSeed seed, String name, boolean importing) {
+        super(-1, name, DASH, seed, DASH_COIN_NUMBER, 0, 0, 0);
         if (importing) {
             //TODO calculate the number of account
         }
@@ -77,7 +84,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
         }
 
         Balance balance = new Balance();
-        balance.setType(BITCOIN);
+        balance.setType(DASH);
         balance.setDate(lastDate);
         balance.setConfirmedAmount(confirmedAmount);
         balance.setUnconfirmedAmount(unconfirmedAmount);
@@ -87,6 +94,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
         return balances;
     }
 
+    @Override
     public String getNextRecieveAddress() {
         if (!externalKeys.containsKey(lastExternalIndex)) {
             externalKeys.put(lastExternalIndex, new GeneralCoinAddress(this, false, lastExternalIndex, HDKeyDerivation.deriveChildKey(externalKey, new ChildNumber(lastExternalIndex, false))));
@@ -102,6 +110,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
         return externalKeys.get(lastExternalIndex).getAddressString(param);
     }
 
+    @Override
     public String getNextChangeAddress() {
         if (!changeKeys.containsKey(lastChangeIndex)) {
             changeKeys.put(lastChangeIndex, new GeneralCoinAddress(this, true, lastChangeIndex, HDKeyDerivation.deriveChildKey(changeKey, new ChildNumber(lastChangeIndex, false))));
@@ -119,7 +128,7 @@ public class BitcoinAccount extends GeneralCoinAccount {
 
     @Override
     public void send(String toAddress, de.bitsharesmunich.cryptocoincore.base.Coin coin, long amount, String memo, CryptoCoreSQLite db) {
-        if(coin.name().equalsIgnoreCase("bitcoin")){
+        if(coin.equals(DASH)){
             Transaction tx = new Transaction(param);
 
             long currentAmount = 0;

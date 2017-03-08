@@ -1,7 +1,7 @@
 package de.bitsharesmunich.cyptocoincore.insightapi;
 
 import de.bitsharesmunich.cryptocoincore.base.Coin;
-import de.bitsharesmunich.cryptocoincore.base.GIOTx;
+import de.bitsharesmunich.cryptocoincore.base.GTxIO;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.base.GeneralTransaction;
@@ -54,17 +54,17 @@ public class GetTransactionData extends Thread {
             JSONArray vins = transactionObject.getJSONArray("vin");
             for (int j = 0; j < vins.length(); j++) {
                 JSONObject vin = vins.getJSONObject(j);
-                GIOTx input = new GIOTx();
+                GTxIO input = new GTxIO();
                 input.setAmount(vin.getLong("valueSat"));
                 input.setTransaction(transaction);
-                input.setIsOut(true);
+                input.setOut(true);
                 input.setType(Coin.BITCOIN);
                 String addr = vin.getString("addr");
                 input.setAddressString(addr);
                 for (GeneralCoinAddress address : account.getAddresses()) {
                     if (address.getAddressString(account.getNetworkParam()).equals(addr)) {
                         input.setAddress(address);
-                        address.getOutputTransaction().add(input);
+                        address.getTransactionOutput().add(input);
                     }
                 }
             }
@@ -72,17 +72,17 @@ public class GetTransactionData extends Thread {
             JSONArray vouts = transactionObject.getJSONArray("vout");
             for (int j = 0; j < vouts.length(); j++) {
                 JSONObject vout = vouts.getJSONObject(j);
-                GIOTx input = new GIOTx();
+                GTxIO input = new GTxIO();
                 input.setAmount((long) (vout.getDouble("value") * 1000000000));
                 input.setTransaction(transaction);
-                input.setIsOut(false);
+                input.setOut(false);
                 input.setType(Coin.BITCOIN);
                 String addr = vout.getJSONObject("scriptPubKey").getJSONArray("addresses").getString(0);
                 input.setAddressString(addr);
                 for (GeneralCoinAddress address : account.getAddresses()) {
                     if (address.getAddressString(account.getNetworkParam()).equals(addr)) {
                         input.setAddress(address);
-                        address.getInputTransaction().add(input);
+                        address.getTransactionInput().add(input);
                     }
                 }
             }

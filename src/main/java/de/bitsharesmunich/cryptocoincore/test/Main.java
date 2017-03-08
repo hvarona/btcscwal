@@ -31,6 +31,7 @@ public class Main {
             test.testBip39SeedGeneration();
         }*/
         //test.testSocketConnection();
-        test.testSendTransaction();
+        //test.testSendTransaction();
+        test.testDashSendTransaction();
     }
 }

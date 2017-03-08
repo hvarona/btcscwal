@@ -1,6 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.test;
 
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.dash.DashAccount;
 import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
@@ -39,6 +40,8 @@ import org.json.JSONObject;
  * @author Henry
  */
 public class MainTest {
+    
+    private static final String TEST_SEED_WORDS = "away rough beauty exist media curious labor recycle input riot produce rain series orphan exclude kit depend unfold still dizzy young girl emotion ahead";
 
     public void testBitcoinAccountCreation() {
         BitcoinManager bitcoinFactory = BitcoinManager.getInstance();
@@ -75,7 +78,7 @@ public class MainTest {
 
     public void testSocketConnection() {
         try {
-            BIP39 accountSeed = new BIP39("away rough beauty exist media curious labor recycle input riot produce rain series orphan exclude kit depend unfold still dizzy young girl emotion ahead", "");
+            BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
             final BitcoinAccount account = BitcoinManager.getInstance().newAccount(accountSeed, "test account");
             System.out.println("address " + account.getNextRecieveAddress());
 
@@ -160,7 +163,7 @@ public class MainTest {
     public void testSendTransaction() {
         NetworkParameters params = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
         Transaction tx = new Transaction(params);
-        BIP39 accountSeed = new BIP39("away rough beauty exist media curious labor recycle input riot produce rain series orphan exclude kit depend unfold still dizzy young girl emotion ahead", "");
+        BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
         final BitcoinAccount account = BitcoinManager.getInstance().newAccount(accountSeed, "test account");
         ECKey key = account.getAddress(0, false).getKey();
         System.out.println("address : " + key.toAddress(params).toBase58());
@@ -224,5 +227,13 @@ public class MainTest {
         } catch (IOException ex) {
             Logger.getLogger(GetAddressData.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void testDashSendTransaction() {
+        BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
+        final DashAccount account = new DashAccount(accountSeed, " Test Dash Account");
+        System.out.println(" dash next address " + account.getNextRecieveAddress());
+        String toAddress ="";
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, 100000, "" , null);
     }
 }

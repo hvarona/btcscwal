@@ -15,10 +15,10 @@ public class CryptoCoinFactory {
             case BITCOIN:
                 return BitcoinManager.getInstance();
         }
-        
+
         return null;
     }
-    
+
     public static CryptoCoinAccount getAccountFromJson(JsonObject accountObject, AccountSeed seed){
         Coin coin = Coin.valueOf(accountObject.get("type").getAsString());
         String name = accountObject.get("name").getAsString();
@@ -27,9 +27,9 @@ public class CryptoCoinFactory {
                 int accountNumber = accountObject.get("accountNumber").getAsInt();
                 int externalIndex = accountObject.get("externalIndex").getAsInt();
                 int changeIndex = accountObject.get("changeIndex").getAsInt();
-                return BitcoinManager.getInstance().getAccount(null, name, seed, accountNumber, externalIndex, changeIndex);
+                return BitcoinManager.getInstance().getAccount(-1, name, seed, accountNumber, externalIndex, changeIndex);
         }
         return null;
     }
-    
 }
+
