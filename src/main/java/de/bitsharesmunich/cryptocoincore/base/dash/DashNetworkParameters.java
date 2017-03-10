@@ -4,17 +4,16 @@ import static com.google.common.base.Preconditions.checkState;
 import com.google.common.base.Stopwatch;
 import de.bitsharesmunich.cryptocoincore.base.CoinDefinitions;
 import org.bitcoinj.core.CustomNetworkParameters;
-import static java.lang.Math.log;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.DashSerializer;
 import org.bitcoinj.core.StoredBlock;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.core.VerificationException;
-import static org.bitcoinj.params.AbstractBitcoinNetParams.BITCOIN_SCHEME;
 import org.bitcoinj.store.BlockStore;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.utils.MonetaryFormat;
@@ -175,12 +174,12 @@ public class DashNetworkParameters extends CustomNetworkParameters{
 
     @Override
     public BitcoinSerializer getSerializer(boolean parseRetain) {
-        return new BitcoinSerializer(this, parseRetain);
+        return new DashSerializer(this, parseRetain);
     }
 
     @Override
     public String getUriScheme() {
-        return BITCOIN_SCHEME;
+        return DASH_SCHEME;
     }
 
     @Override
