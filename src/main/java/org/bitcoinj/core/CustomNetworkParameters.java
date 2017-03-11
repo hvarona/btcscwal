@@ -34,13 +34,14 @@ protected CoinDefinitions coinDefinitions;
     }
 
     protected CustomNetworkParameters(CoinDefinitions coinDefinitions) {
+        super();
         alertSigningKey = Utils.HEX.decode(coinDefinitions.satoshiKey);
         this.coinDefinitions = coinDefinitions;
         genesisBlock = createGenesis(this, coinDefinitions);
     }
     //TODO:  put these bytes into the CoinDefinition
     private static Block createGenesis(NetworkParameters n,CoinDefinitions coinDefinitions) {
-        Block genesisBlock = new Block(n, Block.BLOCK_VERSION_GENESIS);
+        Block genesisBlock = new DashBlock(n, Block.BLOCK_VERSION_GENESIS);
         //Block genesisBlock = new Block(n, Block.BLOCK_VERSION_GENESIS,Sha256Hash.ZERO_HASH, Sha256Hash.ZERO_HASH, System.currentTimeMillis() / 1000, coinDefinitions.genesisBlockDifficultyTarget , 0, new ArrayList());
         Transaction t = new Transaction(n);
         try {

@@ -233,7 +233,7 @@ public class MainTest {
         BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
         final DashAccount account = new DashAccount(accountSeed, " Test Dash Account");
         System.out.println(" dash next address " + account.getNextRecieveAddress());
-        String toAddress ="";
+        String toAddress ="XkysCa58ih9N5axycNfqVU7SsDA94CkbrT";
         account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, 100000, "" , null);
     }
 }

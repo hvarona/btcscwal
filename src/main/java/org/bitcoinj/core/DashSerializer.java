@@ -29,10 +29,29 @@ public class DashSerializer extends BitcoinSerializer {
     private final NetworkParameters params;
     private final boolean parseRetain;
 
-    private static final Map<Class<? extends Message>, String> names = new HashMap<Class<? extends Message>, String>();
+    private static final Map<Class<? extends Message>, String> names = new HashMap<>();
 
     static {
-
+        names.put(VersionMessage.class, "version");
+        names.put(InventoryMessage.class, "inv");
+        names.put(Block.class, "block");
+        names.put(GetDataMessage.class, "getdata");
+        names.put(Transaction.class, "tx");
+        names.put(AddressMessage.class, "addr");
+        names.put(Ping.class, "ping");
+        names.put(Pong.class, "pong");
+        names.put(VersionAck.class, "verack");
+        names.put(GetBlocksMessage.class, "getblocks");
+        names.put(GetHeadersMessage.class, "getheaders");
+        names.put(GetAddrMessage.class, "getaddr");
+        names.put(HeadersMessage.class, "headers");
+        names.put(BloomFilter.class, "filterload");
+        names.put(FilteredBlock.class, "merkleblock");
+        names.put(NotFoundMessage.class, "notfound");
+        names.put(MemoryPoolMessage.class, "mempool");
+        names.put(RejectMessage.class, "reject");
+        names.put(GetUTXOsMessage.class, "getutxos");
+        names.put(UTXOsMessage.class, "utxos");
         //Dash specific messages
         /*names.put(DarkSendElectionEntryPingMessage.class, "dseep");
 

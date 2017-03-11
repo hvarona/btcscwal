@@ -35,8 +35,8 @@ public class DashNetworkParameters extends CustomNetworkParameters{
 
     public DashNetworkParameters() {
         super(dashDefinitions);
-        interval = (int)(24 * 60 * 60);
-        targetTimespan = (int)(2.5 * 60);
+        interval = (int)(576);
+        targetTimespan = (int)(86400);
         maxTarget = dashDefinitions.proofOfWorkLimit;
         dumpedPrivateKeyHeader = 128 + dashDefinitions.AddressHeader;
         addressHeader = dashDefinitions.AddressHeader;
@@ -54,7 +54,7 @@ public class DashNetworkParameters extends CustomNetworkParameters{
         majorityRejectBlockOutdated = MAINNET_MAJORITY_REJECT_BLOCK_OUTDATED;
         majorityWindow = MAINNET_MAJORITY_WINDOW;
 
-        id = "dash";
+        id = ID_MAINNET;
         subsidyDecreaseBlockCount = dashDefinitions.subsidyDecreaseBlockCount;
         spendableCoinbaseDepth = dashDefinitions.spendableCoinbaseDepth;
         String genesisHash = genesisBlock.getHashAsString();
