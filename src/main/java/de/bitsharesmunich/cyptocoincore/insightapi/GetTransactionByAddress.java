@@ -1,9 +1,15 @@
 package de.bitsharesmunich.cyptocoincore.insightapi;
 
+import com.google.gson.Gson;
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.GTxIO;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.base.GeneralTransaction;
+import de.bitsharesmunich.cryptocoincore.insightapi.models.AddressTxi;
+import de.bitsharesmunich.cryptocoincore.insightapi.models.Txi;
+import de.bitsharesmunich.cryptocoincore.insightapi.models.Vin;
+import de.bitsharesmunich.cryptocoincore.insightapi.models.Vout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -40,6 +46,65 @@ public class GetTransactionByAddress extends Thread {
 
     public void addAdress(GeneralCoinAddress address) {
         addresses.add(address);
+    }
+
+    public static GeneralTransaction parseTransaction(String jsonTransaction, Coin coin) {
+
+        Gson gson = new Gson();
+        Txi txi  = gson.fromJson(jsonTransaction, Txi.class);
+
+        if(txi != null){
+            GeneralTransaction transaction = new GeneralTransaction();
+            transaction.setTxid(txi.txid);
+            transaction.setBlock(txi.blockheight);
+            transaction.setDate(new Date(txi.time * 1000));
+            transaction.setFee((long) (txi.fee * Math.pow(10, coin.getPrecision())));
+            transaction.setConfirm(txi.confirmations);
+            transaction.setType(coin);
+            transaction.setBlockHeight(txi.blockheight);
+
+            for (Vin vin : txi.vin) {
+                GTxIO input = new GTxIO();
+                input.setAmount((long) (vin.value * Math.pow(10, coin.getPrecision())));
+                input.setTransaction(transaction);
+                input.setOut(true);
+                input.setType(coin);
+                String addr = vin.addr;
+                input.setAddressString(addr);
+                input.setIndex(vin.n);
+                input.setScriptHex(vin.scriptSig.hex);
+                input.setOriginalTxid(vin.txid);
+                transaction.getTxInputs().add(input);
+            }
+
+            for (Vout vout : txi.vout) {
+                if (vout.scriptPubKey.addresses == null || vout.scriptPubKey.addresses.length <= 0) {
+                    // The address is null, this must be a memo
+                    String hex = vout.scriptPubKey.hex;
+                    int opReturnIndex = hex.indexOf("6a");
+                    if (opReturnIndex >= 0) {
+                        byte[] memoBytes = new byte[Integer.parseInt(hex.substring(opReturnIndex + 2, opReturnIndex + 4), 16)];
+                        for (int i = 0; i < memoBytes.length; i++) {
+                            memoBytes[i] = Byte.parseByte(hex.substring(opReturnIndex + 4 + (i * 2), opReturnIndex + 6 + (i * 2)), 16);
+                        }
+                        transaction.setMemo(new String(memoBytes));
+                    }
+                } else {
+                    GTxIO output = new GTxIO();
+                    output.setAmount((long) (vout.value * Math.pow(10, coin.getPrecision())));
+                    output.setTransaction(transaction);
+                    output.setOut(false);
+                    output.setType(coin);
+                    String addr = vout.scriptPubKey.addresses[0];
+                    output.setAddressString(addr);
+                    output.setIndex(vout.n);
+                    output.setScriptHex(vout.scriptPubKey.hex);
+                    transaction.getTxOutputs().add(output);
+                }
+            }
+            return transaction;
+        }
+        return null;
     }
 
     @Override
@@ -91,7 +156,7 @@ public class GetTransactionByAddress extends Thread {
                         JSONObject vout = vouts.getJSONObject(j);
                         GTxIO input = new GTxIO();
                         System.out.println("value " + vout.getDouble("value"));
-                        input.setAmount((long)(vout.getDouble("value")*1000000000));
+                        input.setAmount((long) (vout.getDouble("value") * 1000000000));
                         input.setTransaction(transaction);
                         input.setOut(false);
                         input.setType(Coin.BITCOIN);

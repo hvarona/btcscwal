@@ -1,6 +1,9 @@
 package de.bitsharesmunich.cryptocoincore.test;
 
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
+import de.bitsharesmunich.cryptocoincore.base.GTxIO;
+import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
+import de.bitsharesmunich.cryptocoincore.base.GeneralTransaction;
 import de.bitsharesmunich.cryptocoincore.base.dash.DashAccount;
 import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
@@ -22,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bitcoinj.core.Address;
@@ -232,8 +236,69 @@ public class MainTest {
     public void testDashSendTransaction() {
         BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
         final DashAccount account = new DashAccount(accountSeed, " Test Dash Account");
+        account.calculateGapExternal();
+        account.calculateGapChange();
         System.out.println(" dash next address " + account.getNextRecieveAddress());
-        String toAddress ="XkysCa58ih9N5axycNfqVU7SsDA94CkbrT";
-        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, 100000, "" , null);
+        ArrayList<GeneralTransaction> transactions = new ArrayList<>();
+        transactions.add(GetTransactionByAddress.parseTransaction("{\"txid\":\"e6b4dbfb0d846f097357f121eda90bab1804956874a05d83576345233148b4df\",\"version\":1,\"locktime\":635875,\"vin\":[{\"txid\":\"1b881b0f76d031ced756156fe7ebb68887bf3f06901ba535e66df7997e0cd88d\",\"vout\":1,\"sequence\":4294967294,\"n\":0,\"scriptSig\":{\"hex\":\"4730440220015d275280ea717de5112342b0e4d7f4d062173ef9fb038dcde6122a003aeb84022074399519c733a5d69f076ab20866fbdbf8f5218e576552d81b43d1458378d3920121035eeed9d54b5265ae65a8b3aebf289ecd54803e601a34a399734b4ffdde468996\",\"asm\":\"30440220015d275280ea717de5112342b0e4d7f4d062173ef9fb038dcde6122a003aeb84022074399519c733a5d69f076ab20866fbdbf8f5218e576552d81b43d1458378d392[ALL] 035eeed9d54b5265ae65a8b3aebf289ecd54803e601a34a399734b4ffdde468996\"},\"addr\":\"XmWENM5QAnrDk7tPgj7trcniSbeaJEcrQJ\",\"valueSat\":18111296,\"value\":0.18111296,\"doubleSpentTxID\":null}],\"vout\":[{\"value\":\"0.02116985\",\"n\":0,\"scriptPubKey\":{\"hex\":\"76a91487d0b2c4f6344c7d7f852f443216c8ec7864ecdd88ac\",\"asm\":\"OP_DUP OP_HASH160 87d0b2c4f6344c7d7f852f443216c8ec7864ecdd OP_EQUALVERIFY OP_CHECKSIG\",\"addresses\":[\"Xo4y4mG3JB8rzxMLwHa9qPFoQ46DiEL9Vq\"],\"type\":\"pubkeyhash\"},\"spentTxId\":null,\"spentIndex\":null,\"spentHeight\":null},{\"value\":\"0.15949153\",\"n\":1,\"scriptPubKey\":{\"hex\":\"76a91470e978837ddb31684e8033b0b96599f8a1ae9b7588ac\",\"asm\":\"OP_DUP OP_HASH160 70e978837ddb31684e8033b0b96599f8a1ae9b75 OP_EQUALVERIFY OP_CHECKSIG\",\"addresses\":[\"XkysCa58ih9N5axycNfqVU7SsDA94CkbrT\"],\"type\":\"pubkeyhash\"},\"spentTxId\":null,\"spentIndex\":null,\"spentHeight\":null}],\"blockhash\":\"0000000000004a233f492b80a08b86902bd64b51c47531be0987458ebf987bd9\",\"blockheight\":635876,\"confirmations\":6,\"time\":1489448344,\"blocktime\":1489448344,\"valueOut\":0.18066138,\"size\":225,\"valueIn\":0.18111296,\"fees\":0.00045158,\"txlock\":false}", de.bitsharesmunich.cryptocoincore.base.Coin.DASH));
+        transactions.add(GetTransactionByAddress.parseTransaction("{\"txid\":\"f3818dc2379c4e6eaddca5ca5fea650000c3f3d45a4ee48429410ed9d6d51853\",\"version\":1,\"locktime\":0,\"vin\":[{\"txid\":\"e6b4dbfb0d846f097357f121eda90bab1804956874a05d83576345233148b4df\",\"vout\":1,\"sequence\":4294967295,\"n\":0,\"scriptSig\":{\"hex\":\"48304502210090c24533eb9c87aa0b5d6028b409281ca593ce2895624c784e55505429eafaba02204dcba6f945deb91a6a47cf59920112a082a4e5d5ebf4edbd7d23e06364bcdc05812102cc5e5ef416b0a80f4923ea56c16cb27ece4c2bc9ecd437b26b8a60980b6efb75\",\"asm\":\"304502210090c24533eb9c87aa0b5d6028b409281ca593ce2895624c784e55505429eafaba02204dcba6f945deb91a6a47cf59920112a082a4e5d5ebf4edbd7d23e06364bcdc05[ALL|ANYONECANPAY] 02cc5e5ef416b0a80f4923ea56c16cb27ece4c2bc9ecd437b26b8a60980b6efb75\"},\"addr\":\"XkysCa58ih9N5axycNfqVU7SsDA94CkbrT\",\"valueSat\":15949153,\"value\":0.15949153,\"doubleSpentTxID\":null}],\"vout\":[{\"value\":\"0.00100000\",\"n\":0,\"scriptPubKey\":{\"hex\":\"76a914a32d67d1b69f7a44752c6529c51d6d9a654d379888ac\",\"asm\":\"OP_DUP OP_HASH160 a32d67d1b69f7a44752c6529c51d6d9a654d3798 OP_EQUALVERIFY OP_CHECKSIG\",\"addresses\":[\"XqZeNMW8s29u7TdsYG96hZFULfP5chkP6B\"],\"type\":\"pubkeyhash\"},\"spentTxId\":null,\"spentIndex\":null,\"spentHeight\":null},{\"value\":\"0.15749153\",\"n\":1,\"scriptPubKey\":{\"hex\":\"76a914c24220e0b3aeba0660c8d0e7e6d11d2e012c52f288ac\",\"asm\":\"OP_DUP OP_HASH160 c24220e0b3aeba0660c8d0e7e6d11d2e012c52f2 OP_EQUALVERIFY OP_CHECKSIG\",\"addresses\":[\"XtPz99niVrzijLeg96xLa3VkBN18qMc24e\"],\"type\":\"pubkeyhash\"},\"spentTxId\":null,\"spentIndex\":null,\"spentHeight\":null}],\"blockhash\":\"000000000000459356b73ecdfb4f7757b1c9a31c3629523fd3b884c004a06fff\",\"blockheight\":635909,\"confirmations\":6,\"time\":1489453828,\"blocktime\":1489453828,\"valueOut\":0.15849153,\"size\":226,\"valueIn\":0.15949153,\"fees\":0.001,\"txlock\":false}", de.bitsharesmunich.cryptocoincore.base.Coin.DASH));
+        for(GeneralTransaction trans : transactions){
+         for(GeneralCoinAddress address : account.getAddresses()){
+            for(GTxIO output : trans.getTxOutputs()){
+                if(output.getAddressString().equalsIgnoreCase(address.getAddressString(account.getNetworkParam()))){
+                    System.out.println("Se encontro output");
+                    address.getTransactionInput().add(output);
+                    output.setAddress(address);
+                    break;
+                }
+            }
+            for(GTxIO input : trans.getTxInputs()){
+                if(input.getAddressString().equalsIgnoreCase(address.getAddressString(account.getNetworkParam()))){
+                    System.out.println("Se encontro input");
+                    address.getTransactionOutput().add(input);
+                    input.setAddress(address);
+                    break;
+                }
+            }
+         }
+        }
+        System.out.println(" dash next address " + account.getNextRecieveAddress());
+        String toAddress ="XgompkKkWQKtDWBR2C7V7Gc5aduy1j474X";
+        System.out.println("balance " + account.getBalance().get(0).getAmmount()/100000000);
+        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount()/100000000);
+        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount()/100000000);
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, 5000000, "" , null);
+        
+        try {
+            String urlParameters = "rawtx=01000000015318d5d6d90e412984e44e5ad4f3c3000065ea5fcaa5dcad6e4e9c37c28d81f3010000006a4730440220412add954680d851b3b3f103af896ba1cc35d686867759cddecfd7cddba9028e0220474aef855614cd753a49c3ddfe4d354b40e375ed0395b0ee29b2c03ab6890009812103114c7910b78bf3ed064e3e2e560360ed10bf554beb0da00e1d85e2c7c90edb95ffffffff02404b4c00000000001976a914432051f3ba52aeb8c838f5ca46376d61161fb0f788aca1c29400000000001976a914afca9d2c6da2bb969be3bf03a0ef512b48a02ad588ac00000000";
+            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            String request = "http://fr.blockpay.ch:3005/insight-api-dash/tx/send";
+            URL url = new URL(request);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setInstanceFollowRedirects(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("charset", "utf-8");
+            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            conn.setUseCaches(false);
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.write(postData);
+                wr.flush();
+            }
+            
+            Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+            for (int c; (c = in.read()) >= 0;) {
+                System.out.print((char) c);
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(GetAddressData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("balance " + account.getBalance().get(0).getAmmount()/100000000);
+        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount()/100000000);
+        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount()/100000000);
     }
 }

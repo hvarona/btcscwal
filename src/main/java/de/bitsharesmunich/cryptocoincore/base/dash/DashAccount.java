@@ -132,7 +132,7 @@ public class DashAccount extends GeneralCoinAccount{
             Transaction tx = new Transaction(param);
 
             long currentAmount = 0;
-            long fee = 10000; //TODO calculate fee
+            long fee = 1000000; //always instant send
 
             List<GeneralCoinAddress> addresses = getAddresses();
             List<GTxIO> utxos = new ArrayList();
@@ -194,6 +194,7 @@ public class DashAccount extends GeneralCoinAccount{
                 }
                 tx.addSignedInput(outPoint, script, utxo.getAddress().getKey(), Transaction.SigHash.ALL, true);
             }
+            
 
 
 

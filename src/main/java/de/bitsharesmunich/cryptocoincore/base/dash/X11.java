@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bitsharesmunich.cryptocoincore.base.dash;
 
 import fr.cryptohash.BLAKE512;
@@ -19,10 +14,6 @@ import fr.cryptohash.Skein512;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author henry
- */
 public class X11 {
     private static final Logger log = LoggerFactory.getLogger(X11.class);
     private static boolean native_library_loaded = false;
@@ -54,16 +45,8 @@ public class X11 {
     }
 
     public static byte[] x11Digest(byte[] input) {
-        //long start = System.currentTimeMillis();
         try {
             return native_library_loaded ? x11_native(input) : x11(input);
-            /*long start = System.currentTimeMillis();
-            byte [] result = x11_native(input);
-            long end1 = System.currentTimeMillis();
-            byte [] result2 = x11(input);
-            long end2 = System.currentTimeMillis();
-            log.info("x11: native {} / java {}", end1-start, end2-end1);
-            return result;*/
         } catch (Exception e) {
             return null;
         }
