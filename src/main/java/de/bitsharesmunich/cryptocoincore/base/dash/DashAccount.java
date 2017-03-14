@@ -14,6 +14,7 @@ import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.test.CryptoCoreSQLite;
 import de.bitsharesmunich.cryptocoincore.util.Util;
+import de.bitsharesmunich.cyptocoincore.insightapi.BroadcastTransaction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -200,8 +201,8 @@ public class DashAccount extends GeneralCoinAccount{
 
             System.out.println("SENDTEST: " + Util.bytesToHex(tx.bitcoinSerialize()));
 
-            //BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this,db);
-            //brTrans.start();
+            BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this);
+            brTrans.start();
 
         }else{
             //TODO error bad coin argument
