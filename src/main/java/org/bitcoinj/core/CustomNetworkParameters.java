@@ -1,18 +1,12 @@
 package org.bitcoinj.core;
 
+import de.bitsharesmunich.cryptocoincoire.dogecoin.DogeCoinNetworkParameters;
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.CoinDefinitions;
 import de.bitsharesmunich.cryptocoincore.base.dash.DashNetworkParameters;
+import de.bitsharesmunich.cryptocoincore.litecoin.LiteCoinNetworkParameters;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Objects;
-import org.bitcoinj.core.Block;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionInput;
-import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.core.Utils;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptOpCodes;
 
@@ -20,9 +14,9 @@ import org.bitcoinj.script.ScriptOpCodes;
  *
  * @author henry
  */
-public abstract class CustomNetworkParameters extends NetworkParameters{
+public abstract class CustomNetworkParameters extends NetworkParameters {
 
-protected CoinDefinitions coinDefinitions;    
+    protected CoinDefinitions coinDefinitions;
 //Dash Extra Parameters
     protected String strSporkKey;
     String strMasternodePaymentsPubKey;
@@ -39,8 +33,9 @@ protected CoinDefinitions coinDefinitions;
         this.coinDefinitions = coinDefinitions;
         genesisBlock = createGenesis(this, coinDefinitions);
     }
+
     //TODO:  put these bytes into the CoinDefinition
-    private static Block createGenesis(NetworkParameters n,CoinDefinitions coinDefinitions) {
+    private static Block createGenesis(NetworkParameters n, CoinDefinitions coinDefinitions) {
         Block genesisBlock = new DashBlock(n, Block.BLOCK_VERSION_GENESIS);
         //Block genesisBlock = new Block(n, Block.BLOCK_VERSION_GENESIS,Sha256Hash.ZERO_HASH, Sha256Hash.ZERO_HASH, System.currentTimeMillis() / 1000, coinDefinitions.genesisBlockDifficultyTarget , 0, new ArrayList());
         Transaction t = new Transaction(n);
@@ -66,9 +61,13 @@ protected CoinDefinitions coinDefinitions;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        return getId().equals(((NetworkParameters)o).getId());
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return getId().equals(((NetworkParameters) o).getId());
     }
 
     @Override
@@ -77,11 +76,15 @@ protected CoinDefinitions coinDefinitions;
     }
 
     public static NetworkParameters fromCoin(Coin coin) {
-        switch (coin){
+        switch (coin) {
             case BITCOIN:
                 return NetworkParameters.fromID(ID_MAINNET);
             case DASH:
                 return new DashNetworkParameters();
+            case LITECOIN:
+                return new LiteCoinNetworkParameters();
+            case DOGECOIN:
+                return new DogeCoinNetworkParameters();
         };
         return null;
     }
