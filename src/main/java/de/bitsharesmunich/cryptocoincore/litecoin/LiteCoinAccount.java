@@ -30,10 +30,10 @@ public class LiteCoinAccount extends GeneralCoinAccount{
     
     private NetworkParameters param = CustomNetworkParameters.fromCoin(LITECOIN);
     
-    private static final int DOGE_COIN_NUMBER = 3;
+    private static final int LITE_COIN_NUMBER = 2;
 
     LiteCoinAccount(long id, String name, AccountSeed seed, int accountNumber, int lastExternalIndex, int lastChangeIndex) {
-        super(id, name, LITECOIN, seed, DOGE_COIN_NUMBER, accountNumber, lastExternalIndex, lastChangeIndex);
+        super(id, name, LITECOIN, seed, LITE_COIN_NUMBER, accountNumber, lastExternalIndex, lastChangeIndex);
 
     }
 
@@ -42,7 +42,7 @@ public class LiteCoinAccount extends GeneralCoinAccount{
     }
 
     LiteCoinAccount(final AccountSeed seed, String name, boolean importing) {
-        super(-1, name, LITECOIN, seed, DOGE_COIN_NUMBER, 0, 0, 0);
+        super(-1, name, LITECOIN, seed, LITE_COIN_NUMBER, 0, 0, 0);
         if (importing) {
             //TODO calculate the number of account
         }
