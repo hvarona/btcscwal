@@ -8,7 +8,6 @@ import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.CustomNetworkParameters;
-import org.bitcoinj.core.DashSerializer;
 import org.bitcoinj.core.NetworkParameters;
 import static org.bitcoinj.core.NetworkParameters.ID_MAINNET;
 import static org.bitcoinj.core.NetworkParameters.MAX_MONEY;
@@ -27,55 +26,54 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  *
  */
-public class LiteCoinNetworkParameters extends CustomNetworkParameters{
+public class LiteCoinNetworkParameters extends CustomNetworkParameters {
+
     public static final String LITECOIN_SCHEME = "litecoin";
     public static final int MAINNET_MAJORITY_WINDOW = 1000;
     public static final int MAINNET_MAJORITY_REJECT_BLOCK_OUTDATED = 950;
     public static final int MAINNET_MAJORITY_ENFORCE_BLOCK_UPGRADE = 750;
-    
-    public static final CoinDefinitions dashDefinitions = new LiteCoinDefinitions();
+
+    public static final CoinDefinitions liteCoinDefinitions = new LiteCoinDefinitions();
     private static final Logger log = LoggerFactory.getLogger(LiteCoinNetworkParameters.class);
 
     public LiteCoinNetworkParameters() {
-        super(dashDefinitions);
-        interval = (int)(576);
-        targetTimespan = (int)(86400);
-        maxTarget = dashDefinitions.proofOfWorkLimit;
-        dumpedPrivateKeyHeader = 128 + dashDefinitions.AddressHeader;
-        addressHeader = dashDefinitions.AddressHeader;
-        p2shHeader = dashDefinitions.p2shHeader;
-        acceptableAddressCodes = new int[] { addressHeader, p2shHeader};
-        port = dashDefinitions.Port;
-        packetMagic = dashDefinitions.PacketMagic;
+        super(liteCoinDefinitions);
+        interval = (int) (2016);
+        targetTimespan = (int) (1209600);
+        maxTarget = liteCoinDefinitions.proofOfWorkLimit;
+        dumpedPrivateKeyHeader = 128 + liteCoinDefinitions.AddressHeader;
+        addressHeader = liteCoinDefinitions.AddressHeader;
+        p2shHeader = liteCoinDefinitions.p2shHeader;
+        acceptableAddressCodes = new int[]{addressHeader, p2shHeader};
+        port = liteCoinDefinitions.Port;
+        packetMagic = liteCoinDefinitions.PacketMagic;
         bip32HeaderPub = 0x0488B21E; //The 4 byte header that serializes in base58 to "xpub".
         bip32HeaderPriv = 0x0488ADE4; //The 4 byte header that serializes in base58 to "xprv"
-        genesisBlock.setDifficultyTarget(dashDefinitions.genesisBlockDifficultyTarget);
-        genesisBlock.setTime(dashDefinitions.genesisBlockTime);
-        genesisBlock.setNonce(dashDefinitions.genesisBlockNonce);
+        genesisBlock.setDifficultyTarget(liteCoinDefinitions.genesisBlockDifficultyTarget);
+        genesisBlock.setTime(liteCoinDefinitions.genesisBlockTime);
+        genesisBlock.setNonce(liteCoinDefinitions.genesisBlockNonce);
 
         majorityEnforceBlockUpgrade = MAINNET_MAJORITY_ENFORCE_BLOCK_UPGRADE;
         majorityRejectBlockOutdated = MAINNET_MAJORITY_REJECT_BLOCK_OUTDATED;
         majorityWindow = MAINNET_MAJORITY_WINDOW;
 
         id = ID_MAINNET;
-        subsidyDecreaseBlockCount = dashDefinitions.subsidyDecreaseBlockCount;
-        spendableCoinbaseDepth = dashDefinitions.spendableCoinbaseDepth;
+        subsidyDecreaseBlockCount = liteCoinDefinitions.subsidyDecreaseBlockCount;
+        spendableCoinbaseDepth = liteCoinDefinitions.spendableCoinbaseDepth;
         String genesisHash = genesisBlock.getHashAsString();
         System.out.println(genesisHash);
-        checkState(genesisHash.equals(dashDefinitions.genesisHash),
+        checkState(genesisHash.equals(liteCoinDefinitions.genesisHash),
                 genesisHash);
 
-        dashDefinitions.initCheckpoints(checkpoints);
+        liteCoinDefinitions.initCheckpoints(checkpoints);
 
-        dnsSeeds = dashDefinitions.dnsSeeds;
-
-        httpSeeds = dashDefinitions.httpSeeds;
-        addrSeeds = dashDefinitions.addrSeeds;
-        
-        strSporkKey = "04549ac134f694c0243f503e8c8a9a986f5de6610049c40b07816809b0d1d06a21b07be27b9bb555931773f62ba6cf35a25fd52f694d4e1106ccd237a7bb899fdd";
+        dnsSeeds = liteCoinDefinitions.dnsSeeds;
+        httpSeeds = liteCoinDefinitions.httpSeeds;
+        addrSeeds = liteCoinDefinitions.addrSeeds;
     }
 
     private static LiteCoinNetworkParameters instance;
+
     public static synchronized LiteCoinNetworkParameters get() {
         if (instance == null) {
             instance = new LiteCoinNetworkParameters();
@@ -87,24 +85,25 @@ public class LiteCoinNetworkParameters extends CustomNetworkParameters{
     public String getPaymentProtocolId() {
         return PAYMENT_PROTOCOL_ID_MAINNET;
     }
-    
+
     protected boolean isDifficultyTransitionPoint(StoredBlock storedPrev) {
         return ((storedPrev.getHeight() + 1) % this.getInterval()) == 0;
     }
 
     @Override
     public void checkDifficultyTransitions(final StoredBlock storedPrev, final Block nextBlock,
-    	final BlockStore blockStore) throws VerificationException, BlockStoreException {
+            final BlockStore blockStore) throws VerificationException, BlockStoreException {
         Block prev = storedPrev.getHeader();
 
         // Is this supposed to be a difficulty transition point?
         if (!isDifficultyTransitionPoint(storedPrev)) {
 
             // No ... so check the difficulty didn't actually change.
-            if (nextBlock.getDifficultyTarget() != prev.getDifficultyTarget())
-                throw new VerificationException("Unexpected change in difficulty at height " + storedPrev.getHeight() +
-                        ": " + Long.toHexString(nextBlock.getDifficultyTarget()) + " vs " +
-                        Long.toHexString(prev.getDifficultyTarget()));
+            if (nextBlock.getDifficultyTarget() != prev.getDifficultyTarget()) {
+                throw new VerificationException("Unexpected change in difficulty at height " + storedPrev.getHeight()
+                        + ": " + Long.toHexString(nextBlock.getDifficultyTarget()) + " vs "
+                        + Long.toHexString(prev.getDifficultyTarget()));
+            }
             return;
         }
 
@@ -121,17 +120,20 @@ public class LiteCoinNetworkParameters extends CustomNetworkParameters{
             cursor = blockStore.get(cursor.getHeader().getPrevBlockHash());
         }
         watch.stop();
-        if (watch.elapsed(TimeUnit.MILLISECONDS) > 50)
+        if (watch.elapsed(TimeUnit.MILLISECONDS) > 50) {
             log.info("Difficulty transition traversal took {}", watch);
+        }
 
         Block blockIntervalAgo = cursor.getHeader();
         int timespan = (int) (prev.getTimeSeconds() - blockIntervalAgo.getTimeSeconds());
         // Limit the adjustment step.
         final int targetTimespan = this.getTargetTimespan();
-        if (timespan < targetTimespan / 4)
+        if (timespan < targetTimespan / 4) {
             timespan = targetTimespan / 4;
-        if (timespan > targetTimespan * 4)
+        }
+        if (timespan > targetTimespan * 4) {
             timespan = targetTimespan * 4;
+        }
 
         BigInteger newTarget = Utils.decodeCompactBits(prev.getDifficultyTarget());
         newTarget = newTarget.multiply(BigInteger.valueOf(timespan));
@@ -150,9 +152,10 @@ public class LiteCoinNetworkParameters extends CustomNetworkParameters{
         newTarget = newTarget.and(mask);
         long newTargetCompact = Utils.encodeCompactBits(newTarget);
 
-        if (newTargetCompact != receivedTargetCompact)
-            throw new VerificationException("Network provided difficulty bits do not match what was calculated: " +
-                    Long.toHexString(newTargetCompact) + " vs " + Long.toHexString(receivedTargetCompact));
+        if (newTargetCompact != receivedTargetCompact) {
+            throw new VerificationException("Network provided difficulty bits do not match what was calculated: "
+                    + Long.toHexString(newTargetCompact) + " vs " + Long.toHexString(receivedTargetCompact));
+        }
     }
 
     @Override
@@ -177,7 +180,8 @@ public class LiteCoinNetworkParameters extends CustomNetworkParameters{
 
     @Override
     public BitcoinSerializer getSerializer(boolean parseRetain) {
-        return new DashSerializer(this, parseRetain);
+        //return new LiteCoinSerializer(this, false, parseRetain);
+        return new BitcoinSerializer(this, parseRetain);
     }
 
     @Override
@@ -189,5 +193,5 @@ public class LiteCoinNetworkParameters extends CustomNetworkParameters{
     public boolean hasMaxMoney() {
         return true;
     }
-    
+
 }

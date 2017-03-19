@@ -32,6 +32,8 @@ public class Main {
         }*/
         //test.testSocketConnection();
         //test.testSendTransaction();
-        test.testDashSendTransaction();
+        //test.testDashSendTransaction();
+        test.testSendLiteCoinAccount();
+        test.testSendDogeCoinAccount();
     }
 }

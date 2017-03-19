@@ -7,6 +7,8 @@ package de.bitsharesmunich.cryptocoincore.base;
 
 import java.math.BigInteger;
 import java.util.Map;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.net.discovery.HttpDiscovery;
 
@@ -34,9 +36,8 @@ public abstract class CoinDefinitions {
     public String[] dnsSeeds;
     public int[] addrSeeds;
     public HttpDiscovery.Details[] httpSeeds;
-    
+
     public String satoshiKey;
-    
 
     public void initCheckpoints(Map<Integer, Sha256Hash> checkpoints) {
 
@@ -54,5 +55,7 @@ public abstract class CoinDefinitions {
         checkpoints.put(88805, Sha256Hash.wrap("00000000001392f1652e9bf45cd8bc79dc60fe935277cd11538565b4a94fa85f"));
         checkpoints.put(90544, Sha256Hash.wrap("000000000001b284b79a44a95215d7e6cf9e22cd4f9b562f2cc796e941e0e411"));
     }
+    
+    public abstract Block getCoinBlock(NetworkParameters n);
 
 }

@@ -88,7 +88,7 @@ public class DashBlock extends Block{
     protected int optimalEncodingMessageSize;
 
     /** Special case constructor, used for the genesis node, cloneAsHeader and unit tests. */
-    DashBlock(NetworkParameters params, long setVersion) {
+    public DashBlock(NetworkParameters params, long setVersion) {
         super(params, setVersion);
         // Set up a few basic things. We are not complete after this though.
         version = setVersion;

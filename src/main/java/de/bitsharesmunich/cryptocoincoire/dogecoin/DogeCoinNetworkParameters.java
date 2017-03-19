@@ -8,7 +8,6 @@ import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.CustomNetworkParameters;
-import org.bitcoinj.core.DashSerializer;
 import org.bitcoinj.core.NetworkParameters;
 import static org.bitcoinj.core.NetworkParameters.ID_MAINNET;
 import static org.bitcoinj.core.NetworkParameters.MAX_MONEY;
@@ -40,7 +39,7 @@ public class DogeCoinNetworkParameters extends CustomNetworkParameters{
     public DogeCoinNetworkParameters() {
         super(dashDefinitions);
         interval = (int)(576);
-        targetTimespan = (int)(86400);
+        targetTimespan = (int)(14400);
         maxTarget = dashDefinitions.proofOfWorkLimit;
         dumpedPrivateKeyHeader = 128 + dashDefinitions.AddressHeader;
         addressHeader = dashDefinitions.AddressHeader;
@@ -178,7 +177,7 @@ public class DogeCoinNetworkParameters extends CustomNetworkParameters{
 
     @Override
     public BitcoinSerializer getSerializer(boolean parseRetain) {
-        return new DashSerializer(this, parseRetain);
+        return new BitcoinSerializer(this, parseRetain);
     }
 
     @Override

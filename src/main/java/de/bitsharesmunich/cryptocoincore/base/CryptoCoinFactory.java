@@ -27,7 +27,6 @@ public class CryptoCoinFactory {
             case BITCOIN:
             {
                 int accountNumber = accountObject.get("accountNumber").getAsInt();
-            
                 int externalIndex = accountObject.get("externalIndex").getAsInt();
                 int changeIndex = accountObject.get("changeIndex").getAsInt();
                 return BitcoinManager.getInstance().getAccount(-1, name, seed, accountNumber, externalIndex, changeIndex);
@@ -53,6 +52,20 @@ public class CryptoCoinFactory {
                 int changeIndex = accountObject.get("changeIndex").getAsInt();
                 return DogeCoinManager.getInstance().getAccount(-1, name, seed, accountNumber, externalIndex, changeIndex);
             }
+        }
+        return null;
+    }
+    
+    public static CryptoCoinAccount getAccountfromSeed(Coin coin, AccountSeed seed, String name){
+        switch(coin){
+            case BITCOIN:
+                return BitcoinManager.getInstance().newAccount(seed, name);
+            case DASH:
+                return DashManager.getInstance().newAccount(seed, name);
+            /*case LITECOIN:
+                return LiteCoinManager.getInstance().newAccount(seed, name);
+            case DOGECOIN:
+                return DogeCoinManager.getInstance().newAccount(seed, name);*/
         }
         return null;
     }

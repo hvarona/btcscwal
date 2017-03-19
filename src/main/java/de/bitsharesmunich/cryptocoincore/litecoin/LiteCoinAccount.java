@@ -195,8 +195,8 @@ public class LiteCoinAccount extends GeneralCoinAccount{
 
             System.out.println("SENDTEST: " + Util.bytesToHex(tx.bitcoinSerialize()));
 
-            BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this);
-            brTrans.start();
+            //BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this);
+            //brTrans.start();
 
         }else{
             //TODO error bad coin argument

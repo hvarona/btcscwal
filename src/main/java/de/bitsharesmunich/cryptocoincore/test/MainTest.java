@@ -1,5 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.test;
 
+import de.bitsharesmunich.cryptocoincoire.dogecoin.DogeCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.GTxIO;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
@@ -8,6 +9,7 @@ import de.bitsharesmunich.cryptocoincore.base.dash.DashAccount;
 import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
+import de.bitsharesmunich.cryptocoincore.litecoin.LiteCoinAccount;
 import de.bitsharesmunich.cryptocoincore.util.Util;
 import de.bitsharesmunich.cyptocoincore.insightapi.GetAddressData;
 import de.bitsharesmunich.cyptocoincore.insightapi.GetTransactionByAddress;
@@ -25,7 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bitcoinj.core.Address;
@@ -44,7 +45,7 @@ import org.json.JSONObject;
  * @author Henry
  */
 public class MainTest {
-    
+
     private static final String TEST_SEED_WORDS = "away rough beauty exist media curious labor recycle input riot produce rain series orphan exclude kit depend unfold still dizzy young girl emotion ahead";
 
     public void testBitcoinAccountCreation() {
@@ -221,7 +222,7 @@ public class MainTest {
                 wr.write(postData);
                 wr.flush();
             }
-            
+
             Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
             for (int c; (c = in.read()) >= 0;) {
@@ -232,7 +233,7 @@ public class MainTest {
             Logger.getLogger(GetAddressData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void testDashSendTransaction() {
         BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
         final DashAccount account = new DashAccount(accountSeed, " Test Dash Account");
@@ -264,9 +265,9 @@ public class MainTest {
             }
          }
         }
-        */
+         */
         GetTransactionByAddress gtba = new GetTransactionByAddress(account);
-        for(GeneralCoinAddress address : account.getAddresses()){
+        for (GeneralCoinAddress address : account.getAddresses()) {
             gtba.addAddress(address);
         }
         gtba.start();
@@ -275,47 +276,19 @@ public class MainTest {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        System.out.println(" dash next address " + account.getNextRecieveAddress());
-        String toAddress =account.getNextRecieveAddress();
-        System.out.println("balance " + account.getBalance().get(0).getAmmount()/100000000);
-        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount()/100000000);
-        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount()/100000000);
-        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, ((long)account.getBalance().get(0).getConfirmedAmount())-1000000, "" , null);
-        
-        try {
-            String urlParameters = "rawtx=01000000015318d5d6d90e412984e44e5ad4f3c3000065ea5fcaa5dcad6e4e9c37c28d81f3010000006a4730440220412add954680d851b3b3f103af896ba1cc35d686867759cddecfd7cddba9028e0220474aef855614cd753a49c3ddfe4d354b40e375ed0395b0ee29b2c03ab6890009812103114c7910b78bf3ed064e3e2e560360ed10bf554beb0da00e1d85e2c7c90edb95ffffffff02404b4c00000000001976a914432051f3ba52aeb8c838f5ca46376d61161fb0f788aca1c29400000000001976a914afca9d2c6da2bb969be3bf03a0ef512b48a02ad588ac00000000";
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-            int postDataLength = postData.length;
-            String request = "http://fr.blockpay.ch:3005/insight-api-dash/tx/send";
-            URL url = new URL(request);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setInstanceFollowRedirects(false);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-            conn.setUseCaches(false);
-            /*try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                wr.write(postData);
-                wr.flush();
-            }
-            
-            Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-            for (int c; (c = in.read()) >= 0;) {
-                System.out.print((char) c);
-            }
-*/
-        } catch (IOException ex) {
-            Logger.getLogger(GetAddressData.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        System.out.println(" dash next address " + account.getNextRecieveAddress());
+        //String toAddress =account.getNextRecieveAddress();
+        String toAddress = "XfSJfBXmMaH3SruoiCMAcrWVuzKvoeG3K7";
+        System.out.println("balance " + account.getBalance().get(0).getAmmount() / 100000000);
+        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
+        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DASH, ((long) account.getBalance().get(0).getConfirmedAmount()) - 1000000, "", null);
+
         account.calculateGapExternal();
         account.calculateGapChange();
         gtba = new GetTransactionByAddress(account);
-        for(GeneralCoinAddress address : account.getAddresses()){
+        for (GeneralCoinAddress address : account.getAddresses()) {
             gtba.addAddress(address);
         }
         gtba.start();
@@ -324,8 +297,166 @@ public class MainTest {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("balance " + account.getBalance().get(0).getAmmount()/100000000);
-        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount()/100000000);
-        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount()/100000000);
+        System.out.println("balance " + account.getBalance().get(0).getAmmount() / 100000000);
+        System.out.println("balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
+        System.out.println("balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
+    }
+
+    public void testSendLiteCoinAccount() {
+        BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
+        final LiteCoinAccount account = new LiteCoinAccount(accountSeed, " Test LiteCoin Account");
+        account.calculateGapExternal();
+        account.calculateGapChange();
+        System.out.println(" LiteCoin next address " + account.getNextRecieveAddress());
+
+        /*GetTransactionByAddress gtba = new GetTransactionByAddress(account);
+        for(GeneralCoinAddress address : account.getAddresses()){
+            gtba.addAddress(address);
+        }
+        gtba.start();*/
+        {
+            GeneralTransaction transaction = new GeneralTransaction();
+            transaction.setTxid("7517c14fe1e3a9a5ef1826a307a9c47d526dc46c3b9ac8305cea2a0b6eee11cf");
+            //transaction.setBlock(txi.blockheight);
+            //transaction.setDate(new Date(txi.time * 1000));
+            transaction.setFee(1573361);
+            transaction.setConfirm(6);
+            transaction.setType(account.getCoin());
+            transaction.setBlockHeight(0);
+
+            GTxIO input = new GTxIO();
+            input.setAmount(110000000);
+            input.setTransaction(transaction);
+            input.setOut(true);
+            input.setType(account.getCoin());
+            String addr = " Lb2rxMN43UsLQZ9KowxZgRJXzwx2YuRz2n";
+            input.setAddressString(addr);
+            input.setIndex(0);
+            input.setScriptHex("483045022100ae38ced3a27c0b5e897f1a0bedf55456c4a8d4c2bec8e38b9f378856f16b79cf022046acc5b008f8f044f4616bb5c37304052514ab8a61c22e1dffe86047521ebcdf012103fa0702c349d79ac0ab6d9824768ad0299bf41b2fde986f0ace4d67557595fee2");
+            input.setOriginalTxid("bb47a75c0fb0c45a596942b5305690106c3bea0483f3b2ab66ac222da8735857");
+            transaction.getTxInputs().add(input);
+
+            GTxIO output1 = new GTxIO();
+            output1.setAmount((long) (0.24579334 * Math.pow(10, account.getCoin().getPrecision())));
+            output1.setTransaction(transaction);
+            output1.setOut(false);
+            output1.setType(account.getCoin());
+            String addrOut1 = "LV5qX4h4Ri7vwLf5myVSgaQA7rYHYmqAvT";
+            output1.setAddressString(addrOut1);
+            output1.setIndex(0);
+            output1.setScriptHex("76a9146c284cf3271b6e28de180efd0e9a2f4bf64e5a8088ac");
+            for (GeneralCoinAddress address : account.getAddresses()) {
+                if (address.getAddressString(account.getNetworkParam()).equals(addrOut1)) {
+                    output1.setAddress(address);
+                    if (!address.hasTransactionInput(output1, account.getNetworkParam())) {
+                        address.getTransactionInput().add(output1);
+                    }
+                }
+            }
+            transaction.getTxOutputs().add(output1);
+
+            GTxIO output = new GTxIO();
+            output.setAmount((long) (0.83847295 * Math.pow(10, account.getCoin().getPrecision())));
+            output.setTransaction(transaction);
+            output.setOut(false);
+            output.setType(account.getCoin());
+            String addrOut = "LiVGjSURYvRMXQgiMkU5oDSDbJfRw5eC2E";
+            output.setAddressString(addrOut);
+            output.setIndex(1);
+            output.setScriptHex("76a914ff308cca0f4e16eb5f6a8b2089e078abfd46485a88ac");
+            transaction.getTxOutputs().add(output);
+        }
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println(" LiteCoin next address " + account.getNextRecieveAddress());
+        String toAddress = account.getNextRecieveAddress();
+        System.out.println("LiteCoin balance " + account.getBalance().get(0).getAmmount() / 100000000);
+        System.out.println("LiteCoin balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
+        System.out.println("LiteCoin balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.LITECOIN, ((long) account.getBalance().get(0).getConfirmedAmount()) - 1000000, "", null);
+    }
+    
+    public void testSendDogeCoinAccount() {
+        BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
+        final DogeCoinAccount account = new DogeCoinAccount(accountSeed, " Test DogeCoin Account");
+        account.calculateGapExternal();
+        account.calculateGapChange();
+        System.out.println(" DogeCoin next address " + account.getNextRecieveAddress());
+
+        /*GetTransactionByAddress gtba = new GetTransactionByAddress(account);
+        for(GeneralCoinAddress address : account.getAddresses()){
+            gtba.addAddress(address);
+        }
+        gtba.start();*/
+        /*{
+            GeneralTransaction transaction = new GeneralTransaction();
+            transaction.setTxid("7517c14fe1e3a9a5ef1826a307a9c47d526dc46c3b9ac8305cea2a0b6eee11cf");
+            //transaction.setBlock(txi.blockheight);
+            //transaction.setDate(new Date(txi.time * 1000));
+            transaction.setFee(1573361);
+            transaction.setConfirm(6);
+            transaction.setType(account.getCoin());
+            transaction.setBlockHeight(0);
+
+            GTxIO input = new GTxIO();
+            input.setAmount(110000000);
+            input.setTransaction(transaction);
+            input.setOut(true);
+            input.setType(account.getCoin());
+            String addr = " Lb2rxMN43UsLQZ9KowxZgRJXzwx2YuRz2n";
+            input.setAddressString(addr);
+            input.setIndex(0);
+            input.setScriptHex("483045022100ae38ced3a27c0b5e897f1a0bedf55456c4a8d4c2bec8e38b9f378856f16b79cf022046acc5b008f8f044f4616bb5c37304052514ab8a61c22e1dffe86047521ebcdf012103fa0702c349d79ac0ab6d9824768ad0299bf41b2fde986f0ace4d67557595fee2");
+            input.setOriginalTxid("bb47a75c0fb0c45a596942b5305690106c3bea0483f3b2ab66ac222da8735857");
+            transaction.getTxInputs().add(input);
+
+            GTxIO output1 = new GTxIO();
+            output1.setAmount((long) (0.24579334 * Math.pow(10, account.getCoin().getPrecision())));
+            output1.setTransaction(transaction);
+            output1.setOut(false);
+            output1.setType(account.getCoin());
+            String addrOut1 = "LV5qX4h4Ri7vwLf5myVSgaQA7rYHYmqAvT";
+            output1.setAddressString(addrOut1);
+            output1.setIndex(0);
+            output1.setScriptHex("76a9146c284cf3271b6e28de180efd0e9a2f4bf64e5a8088ac");
+            for (GeneralCoinAddress address : account.getAddresses()) {
+                if (address.getAddressString(account.getNetworkParam()).equals(addrOut1)) {
+                    output1.setAddress(address);
+                    if (!address.hasTransactionInput(output1, account.getNetworkParam())) {
+                        address.getTransactionInput().add(output1);
+                    }
+                }
+            }
+            transaction.getTxOutputs().add(output1);
+
+            GTxIO output = new GTxIO();
+            output.setAmount((long) (0.83847295 * Math.pow(10, account.getCoin().getPrecision())));
+            output.setTransaction(transaction);
+            output.setOut(false);
+            output.setType(account.getCoin());
+            String addrOut = "LiVGjSURYvRMXQgiMkU5oDSDbJfRw5eC2E";
+            output.setAddressString(addrOut);
+            output.setIndex(1);
+            output.setScriptHex("76a914ff308cca0f4e16eb5f6a8b2089e078abfd46485a88ac");
+            transaction.getTxOutputs().add(output);
+        }*/
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println(" DogeCoin next address " + account.getNextRecieveAddress());
+        String toAddress = account.getNextRecieveAddress();
+        System.out.println("DogeCoin balance " + account.getBalance().get(0).getAmmount() / 100000000);
+        System.out.println("DogeCoin balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
+        System.out.println("DogeCoin balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DOGECOIN, ((long) account.getBalance().get(0).getConfirmedAmount()) - 1000000, "", null);
     }
 }

@@ -1,6 +1,10 @@
 package de.bitsharesmunich.cryptocoincore.base.dash;
 
 import de.bitsharesmunich.cryptocoincore.base.CoinDefinitions;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.core.DashBlock;
+import static org.bitcoinj.core.DashBlock.BLOCK_VERSION_GENESIS;
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Utils;
 
 /**
@@ -35,4 +39,10 @@ public class DashCoinDefinition extends CoinDefinitions {
     };
     }
 
+    @Override
+    public Block getCoinBlock(NetworkParameters n) {
+        return new DashBlock(n, BLOCK_VERSION_GENESIS);
+    }
+
+    
 }

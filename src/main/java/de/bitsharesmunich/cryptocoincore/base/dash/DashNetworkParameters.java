@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.DashSerializer;
 import org.bitcoinj.core.StoredBlock;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
@@ -174,7 +173,7 @@ public class DashNetworkParameters extends CustomNetworkParameters{
 
     @Override
     public BitcoinSerializer getSerializer(boolean parseRetain) {
-        return new DashSerializer(this, parseRetain);
+        return new BitcoinSerializer(this, parseRetain);
     }
 
     @Override

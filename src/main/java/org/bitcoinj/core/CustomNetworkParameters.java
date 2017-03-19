@@ -17,7 +17,8 @@ import org.bitcoinj.script.ScriptOpCodes;
 public abstract class CustomNetworkParameters extends NetworkParameters {
 
     protected CoinDefinitions coinDefinitions;
-//Dash Extra Parameters
+
+    //Dash Extra Parameters
     protected String strSporkKey;
     String strMasternodePaymentsPubKey;
     String strDarksendPoolDummyAddress;
@@ -36,7 +37,8 @@ public abstract class CustomNetworkParameters extends NetworkParameters {
 
     //TODO:  put these bytes into the CoinDefinition
     private static Block createGenesis(NetworkParameters n, CoinDefinitions coinDefinitions) {
-        Block genesisBlock = new DashBlock(n, Block.BLOCK_VERSION_GENESIS);
+        Block genesisBlock = coinDefinitions.getCoinBlock(n);
+        
         //Block genesisBlock = new Block(n, Block.BLOCK_VERSION_GENESIS,Sha256Hash.ZERO_HASH, Sha256Hash.ZERO_HASH, System.currentTimeMillis() / 1000, coinDefinitions.genesisBlockDifficultyTarget , 0, new ArrayList());
         Transaction t = new Transaction(n);
         try {
