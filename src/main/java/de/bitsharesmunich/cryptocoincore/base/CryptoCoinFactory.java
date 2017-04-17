@@ -1,7 +1,7 @@
 package de.bitsharesmunich.cryptocoincore.base;
 
 import com.google.gson.JsonObject;
-import de.bitsharesmunich.cryptocoincoire.dogecoin.DogeCoinManager;
+import de.bitsharesmunich.cryptocoincore.dogecoin.DogeCoinManager;
 import de.bitsharesmunich.cryptocoincore.base.dash.DashManager;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 import de.bitsharesmunich.cryptocoincore.litecoin.LiteCoinManager;

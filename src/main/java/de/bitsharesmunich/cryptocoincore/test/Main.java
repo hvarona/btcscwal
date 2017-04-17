@@ -34,6 +34,6 @@ public class Main {
         //test.testSendTransaction();
         //test.testDashSendTransaction();
         test.testSendLiteCoinAccount();
-        test.testSendDogeCoinAccount();
+        //test.testSendDogeCoinAccount();
     }
 }

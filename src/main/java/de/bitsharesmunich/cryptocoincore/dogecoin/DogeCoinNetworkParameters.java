@@ -1,4 +1,4 @@
-package de.bitsharesmunich.cryptocoincoire.dogecoin;
+package de.bitsharesmunich.cryptocoincore.dogecoin;
 
 import com.google.common.base.Stopwatch;
 import de.bitsharesmunich.cryptocoincore.base.CoinDefinitions;

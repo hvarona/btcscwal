@@ -1,4 +1,4 @@
-package de.bitsharesmunich.cryptocoincoire.dogecoin;
+package de.bitsharesmunich.cryptocoincore.dogecoin;
 
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.GeneralCoinManager;

@@ -9,9 +9,13 @@ import de.bitsharesmunich.cryptocoincore.base.GeneralCoinAddress;
 import de.bitsharesmunich.cryptocoincore.test.CryptoCoreSQLite;
 import de.bitsharesmunich.cryptocoincore.util.Util;
 import de.bitsharesmunich.cyptocoincore.insightapi.BroadcastTransaction;
+import de.bitsharesmunich.cyptocoincore.insightapi.GetEstimateFee;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.CustomNetworkParameters;
@@ -127,7 +131,18 @@ public class LiteCoinAccount extends GeneralCoinAccount{
             Transaction tx = new Transaction(param);
 
             long currentAmount = 0;
-            long fee = 100000; //TODO calculate fee
+                 
+            long fee = -1;
+            try {
+                fee = 226 * GetEstimateFee.getEstimateFee(LITECOIN)/1000;
+            } catch (IOException ex) {
+                Logger.getLogger(LiteCoinAccount.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(fee == -1){
+                fee = (long)(0.001 * Math.pow(10, LITECOIN.getPrecision()));
+            }
+            
+            System.out.println("fee " + fee);
 
             List<GeneralCoinAddress> addresses = getAddresses();
             List<GTxIO> utxos = new ArrayList();
@@ -193,10 +208,10 @@ public class LiteCoinAccount extends GeneralCoinAccount{
 
 
 
-            System.out.println("SENDTEST: " + Util.bytesToHex(tx.bitcoinSerialize()));
+            //System.out.println("SENDTEST: " + Util.bytesToHex(tx.bitcoinSerialize())+ " tx size " + tx.bitcoinSerialize().length);
 
-            //BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this);
-            //brTrans.start();
+            BroadcastTransaction brTrans = new BroadcastTransaction(Util.bytesToHex(tx.bitcoinSerialize()),this);
+            brTrans.start();
 
         }else{
             //TODO error bad coin argument

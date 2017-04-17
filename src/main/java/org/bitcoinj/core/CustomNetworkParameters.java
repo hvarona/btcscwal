@@ -1,6 +1,6 @@
 package org.bitcoinj.core;
 
-import de.bitsharesmunich.cryptocoincoire.dogecoin.DogeCoinNetworkParameters;
+import de.bitsharesmunich.cryptocoincore.dogecoin.DogeCoinNetworkParameters;
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.CoinDefinitions;
 import de.bitsharesmunich.cryptocoincore.base.dash.DashNetworkParameters;
