@@ -7,10 +7,6 @@ import com.google.gson.*;
 import de.bitsharesmunich.graphenej.interfaces.ByteSerializable;
 import de.bitsharesmunich.graphenej.interfaces.JsonSerializable;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -22,7 +18,7 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
      * Constants used in the JSON serialization procedure.
      */
     public static final String KEY_AMOUNT = "amount";
-    public static final String KEY_ASSET_ID = "asset_id";
+    public static final String KEY_ASSET = "asset";
 
     private UnsignedLong amount;
     private String asset;
@@ -46,17 +42,13 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
 
     @Override
     public byte[] toBytes() {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        DataOutput out = new DataOutputStream(byteArrayOutputStream);
-        try {
-            Varint.writeUnsignedVarLong(asset.instance, out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        byte[] assetId = byteArrayOutputStream.toByteArray();
         byte[] value = Util.revertLong(this.amount.longValue());
-
-        return Bytes.concat(value, assetId);
+        byte[] assetByte = new byte[6];
+        assetByte[0] = 6; //precision
+        for (int i = 1; i < 6; i++) {
+            assetByte[i] = (byte) asset.charAt(i - 1);
+        }
+        return Bytes.concat(value, assetByte);
     }
 
     @Override
@@ -87,11 +79,11 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
 
         @Override
         public SteemAssetAmount deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            Long amount = json.getAsJsonObject().get(KEY_AMOUNT).getAsLong();
-            String assetId = json.getAsJsonObject().get(KEY_ASSET_ID).getAsString();
-            //SteemAssetAmount assetAmount = new SteemAssetAmount(UnsignedLong.valueOf(amount), new Asset(assetId));
-            //return assetAmount;
-            return null;
+            String[] amountString = json.getAsString().split(" ");
+            Long amount = Long.parseLong(amountString[0]);
+            String asset = amountString[1].substring(1);
+            SteemAssetAmount assetAmount = new SteemAssetAmount(UnsignedLong.valueOf(amount), asset);
+            return assetAmount;
         }
     }
 }
