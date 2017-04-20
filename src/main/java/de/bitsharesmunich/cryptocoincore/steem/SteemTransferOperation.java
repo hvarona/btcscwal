@@ -1,7 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.steem;
 
 import com.google.common.primitives.Bytes;
-import com.google.common.primitives.UnsignedLong;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -12,17 +11,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import de.bitsharesmunich.graphenej.Address;
 import de.bitsharesmunich.graphenej.AssetAmount;
 import de.bitsharesmunich.graphenej.BaseOperation;
 import de.bitsharesmunich.graphenej.OperationType;
-import de.bitsharesmunich.graphenej.UserAccount;
-import de.bitsharesmunich.graphenej.Util;
 
 import java.lang.reflect.Type;
-
-import de.bitsharesmunich.graphenej.errors.MalformedAddressException;
-import de.bitsharesmunich.graphenej.objects.Memo;
 
 /**
  * Class used to encapsulate the TransferOperation operation related
@@ -30,18 +23,16 @@ import de.bitsharesmunich.graphenej.objects.Memo;
  */
 public class SteemTransferOperation extends BaseOperation {
 
-    private static final String TAG = "TransferOperation";
-    public static final String KEY_FEE = "fee";
+    private static final String TAG = "SteemTransferOperation";
     public static final String KEY_AMOUNT = "amount";
     public static final String KEY_EXTENSIONS = "extensions";
     public static final String KEY_FROM = "from";
     public static final String KEY_TO = "to";
     public static final String KEY_MEMO = "memo";
 
-    private AssetAmount fee;
-    private AssetAmount amount;
-    private UserAccount from;
-    private UserAccount to;
+    private SteemAssetAmount amount;
+    private String from;
+    private String to;
     private String memo;
     private String[] extensions;
 
@@ -54,24 +45,6 @@ public class SteemTransferOperation extends BaseOperation {
     }
 
     /**
-     * Constructor used usually when we have all the transfer operation data,
-     * including the fee.
-     *
-     * @param from
-     * @param to
-     * @param transferAmount
-     * @param fee
-     */
-    public SteemTransferOperation(UserAccount from, UserAccount to, AssetAmount transferAmount, AssetAmount fee) {
-        super(OperationType.transfer_operation);
-        this.from = from;
-        this.to = to;
-        this.amount = transferAmount;
-        this.fee = fee;
-        this.memo = "";
-    }
-
-    /**
      * Constructor with the basic transfer operation. Use this if you will setup
      * the fee later.
      *
@@ -79,34 +52,33 @@ public class SteemTransferOperation extends BaseOperation {
      * @param to
      * @param transferAmount
      */
-    public SteemTransferOperation(UserAccount from, UserAccount to, AssetAmount transferAmount) {
+    public SteemTransferOperation(String from, String to, SteemAssetAmount transferAmount) {
         super(OperationType.transfer_operation);
         this.from = from;
         this.to = to;
         this.amount = transferAmount;
-        this.fee = new AssetAmount(UnsignedLong.valueOf(0), transferAmount.getAsset());
         this.memo = "";
     }
 
     @Override
     public void setFee(AssetAmount newFee) {
-        this.fee = newFee;
+        
     }
 
-    public UserAccount getFrom() {
+    public String getFrom() {
         return this.from;
     }
 
-    public UserAccount getTo() {
+    public String getTo() {
         return this.to;
     }
 
-    public AssetAmount getTransferAmount() {
+    public SteemAssetAmount getTransferAmount() {
         return this.amount;
     }
 
     public AssetAmount getFee() {
-        return this.fee;
+        return null;
     }
 
     public String getMemo() {
@@ -117,32 +89,35 @@ public class SteemTransferOperation extends BaseOperation {
         this.memo = memo;
     }
 
-    public void setAmount(AssetAmount amount) {
+    public void setAmount(SteemAssetAmount amount) {
         this.amount = amount;
     }
 
-    public void setFrom(UserAccount from) {
+    public void setFrom(String from) {
         this.from = from;
     }
 
-    public void setTo(UserAccount to) {
+    public void setTo(String to) {
         this.to = to;
+    }
+
+    public byte[] serializeFixedString(String toSerial) {
+        byte[] result = new byte[toSerial.length() + 1];
+        result[0] = (byte) toSerial.length();
+        for (int i = 0; i < toSerial.length(); i++) {
+            result[i + 1] = (byte) toSerial.charAt(i);
+        }
+        return result;
     }
 
     @Override
     public byte[] toBytes() {
-        byte[] feeBytes = fee.toBytes();
-        byte[] fromBytes = from.toBytes();
-        byte[] toBytes = to.toBytes();
+        byte[] fromBytes = serializeFixedString(from);
+        byte[] toBytes = serializeFixedString(to);
         byte[] amountBytes = amount.toBytes();
+        byte[] memoBytes = serializeFixedString(memo);
 
-        byte[] memoBytes = new byte[memo.length() + 1];
-        memoBytes[0] = (byte) memo.length();
-        for (int i = 0; i < memo.length(); i++) {
-            memoBytes[i + 1] = (byte) memo.charAt(i);
-        }
-
-        return Bytes.concat(feeBytes, fromBytes, toBytes, amountBytes, memoBytes);
+        return Bytes.concat(fromBytes, toBytes, amountBytes, memoBytes);
     }
 
     @Override
@@ -158,9 +133,8 @@ public class SteemTransferOperation extends BaseOperation {
         JsonArray array = new JsonArray();
         array.add(this.getId());
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add(KEY_FEE, fee.toJsonObject());
-        jsonObject.addProperty(KEY_FROM, from.toJsonString());
-        jsonObject.addProperty(KEY_TO, to.toJsonString());
+        jsonObject.addProperty(KEY_FROM, from);
+        jsonObject.addProperty(KEY_TO, to);
         jsonObject.add(KEY_AMOUNT, amount.toJsonObject());
         jsonObject.add(KEY_MEMO, new Gson().toJsonTree(memo));
         jsonObject.add(KEY_EXTENSIONS, new JsonArray());
@@ -213,13 +187,12 @@ public class SteemTransferOperation extends BaseOperation {
                 JsonObject jsonObject = json.getAsJsonObject();
 
                 // Deserializing AssetAmount objects
-                AssetAmount amount = context.deserialize(jsonObject.get(KEY_AMOUNT), AssetAmount.class);
-                AssetAmount fee = context.deserialize(jsonObject.get(KEY_FEE), AssetAmount.class);
+                SteemAssetAmount amount = context.deserialize(jsonObject.get(KEY_AMOUNT), SteemAssetAmount.class);
 
                 // Deserializing UserAccount objects
-                UserAccount from = new UserAccount(jsonObject.get(KEY_FROM).getAsString());
-                UserAccount to = new UserAccount(jsonObject.get(KEY_TO).getAsString());
-                SteemTransferOperation transfer = new SteemTransferOperation(from, to, amount, fee);
+                String from = jsonObject.get(KEY_FROM).getAsString();
+                String to = jsonObject.get(KEY_TO).getAsString();
+                SteemTransferOperation transfer = new SteemTransferOperation(from, to, amount);
 
                 // Deserializing Memo if it exists
                 if (jsonObject.get(KEY_MEMO) != null) {
