@@ -21,7 +21,6 @@ public class SteemTransferTransactionBuilder extends TransactionBuilder {
     private String sourceAccount;
     private String destinationAccount;
     private SteemAssetAmount transferAmount;
-    private SteemAssetAmount feeAmount;
     private String memo;
 
     public SteemTransferTransactionBuilder() {

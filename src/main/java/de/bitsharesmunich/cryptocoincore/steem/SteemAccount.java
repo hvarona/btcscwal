@@ -15,6 +15,7 @@ public class SteemAccount extends GrapheneCoinAccount{
     private int postingIndex = 0;
     private DeterministicKey postingKey = null;
     
+    // Steem only role
     public static final int POSTING_ROLE = 3;
 
     public SteemAccount(int accountNumber, int ownerIndex, int activeIndex, int memoIndex, int netowrkNumber, long id, String name, Coin coin, AccountSeed seed) {

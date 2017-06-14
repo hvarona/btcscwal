@@ -160,9 +160,7 @@ public class SteemTransferOperation extends BaseOperation {
      * An example of this serialized form is the following:
      *
      * [
-     * 0, { "fee": { "amount": 264174, "asset_id": "1.3.0" }, "from":
-     * "1.2.138632", "to": "1.2.129848", "amount": { "amount": 100, "asset_id":
-     * "1.3.0" }, "extensions": [] } ]
+     * 0, { "from": "ACCOUNTNAME1", "to": "ACCOUNTNAME2", "amount": "0.1 STEEM"} ]
      *
      * It will convert this data into a nice TransferOperation object.
      */

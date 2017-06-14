@@ -62,7 +62,7 @@ public abstract class GrapheneCoinAccount extends CryptoCoinAccount {
 
     @Override
     public List<Balance> getBalance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     public abstract Address getAddress(int role);

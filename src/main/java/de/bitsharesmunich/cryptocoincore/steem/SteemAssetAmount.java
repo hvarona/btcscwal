@@ -21,11 +21,10 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
     public static final String KEY_ASSET = "asset";
 
     private UnsignedLong amount;
-    private String asset;
+    private String asset = "STEEM";
 
-    public SteemAssetAmount(UnsignedLong amount, String asset) {
+    public SteemAssetAmount(UnsignedLong amount) {
         this.amount = amount;
-        this.asset = asset;
     }
 
     public void setAmount(UnsignedLong amount) {
@@ -45,7 +44,8 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
         byte[] value = Util.revertLong(this.amount.longValue());
         byte[] assetByte = new byte[6];
         assetByte[0] = 6; //precision
-        for (int i = 1; i < 6; i++) {
+        assetByte[1] = (byte) '3';
+        for (int i = 2; i < 6; i++) {
             assetByte[i] = (byte) asset.charAt(i - 1);
         }
         return Bytes.concat(value, assetByte);
@@ -82,7 +82,7 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
             String[] amountString = json.getAsString().split(" ");
             Long amount = Long.parseLong(amountString[0]);
             String asset = amountString[1].substring(1);
-            SteemAssetAmount assetAmount = new SteemAssetAmount(UnsignedLong.valueOf(amount), asset);
+            SteemAssetAmount assetAmount = new SteemAssetAmount(UnsignedLong.valueOf(amount));
             return assetAmount;
         }
     }
