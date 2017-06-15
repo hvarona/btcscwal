@@ -135,7 +135,7 @@ public class SteemTransferOperation extends BaseOperation {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(KEY_FROM, from);
         jsonObject.addProperty(KEY_TO, to);
-        jsonObject.add(KEY_AMOUNT, amount.toJsonObject());
+        jsonObject.addProperty(KEY_AMOUNT, amount.toString());
         jsonObject.add(KEY_MEMO, new Gson().toJsonTree(memo));
         jsonObject.add(KEY_EXTENSIONS, new JsonArray());
         array.add(jsonObject);

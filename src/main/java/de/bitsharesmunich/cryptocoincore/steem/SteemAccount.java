@@ -70,4 +70,41 @@ public class SteemAccount extends GrapheneCoinAccount{
         }
         return null;
     }
+    
+    public DeterministicKey getKey(int role){
+        DeterministicKey answerKey = null;
+        switch(role){
+            case(OWNER_ROLE):
+            {
+                if(ownerKey == null){
+                    ownerKey = calculateKey(OWNER_ROLE, ownerIndex);
+                }
+                return ownerKey;
+            }
+            case(ACTIVE_ROLE):
+            {
+                if(activeKey == null){
+                    activeKey = calculateKey(ACTIVE_ROLE, activeIndex);
+                }
+                return activeKey;
+            }
+            case(MEMO_ROLE):
+            {
+                if(memoKey == null){
+                    memoKey = calculateKey(MEMO_ROLE, memoIndex);
+                }
+                return memoKey;
+            }
+            case(POSTING_ROLE):
+            {
+                if(postingKey == null){
+                    postingKey = calculateKey(POSTING_ROLE, postingIndex);
+                }
+                return postingKey;
+            }
+            default:
+                //TODO Error
+                return null;
+        }
+    }
 }

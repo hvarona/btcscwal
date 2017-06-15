@@ -1,5 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.test;
 
+import com.google.common.primitives.UnsignedLong;
 import de.bitsharesmunich.cryptocoincore.dogecoin.DogeCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.GTxIO;
@@ -10,10 +11,15 @@ import de.bitsharesmunich.cryptocoincore.base.seed.BIP39;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinAccount;
 import de.bitsharesmunich.cryptocoincore.bitcoin.BitcoinManager;
 import de.bitsharesmunich.cryptocoincore.litecoin.LiteCoinAccount;
+import de.bitsharesmunich.cryptocoincore.steem.SteemAccount;
+import de.bitsharesmunich.cryptocoincore.steem.SteemAssetAmount;
+import de.bitsharesmunich.cryptocoincore.steem.SteemTransferTransactionBuilder;
 import de.bitsharesmunich.cryptocoincore.util.Util;
 import de.bitsharesmunich.cyptocoincore.insightapi.AccountActivityWatcher;
 import de.bitsharesmunich.cyptocoincore.insightapi.GetAddressData;
 import de.bitsharesmunich.cyptocoincore.insightapi.GetTransactionByAddress;
+import de.bitsharesmunich.graphenej.BlockData;
+import de.bitsharesmunich.graphenej.errors.MalformedTransactionException;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -28,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bitcoinj.core.Address;
@@ -311,13 +318,13 @@ public class MainTest {
         System.out.println(" LiteCoin next address " + account.getNextRecieveAddress());
 
         GetTransactionByAddress gtba = new GetTransactionByAddress(account);
-        for(GeneralCoinAddress address : account.getAddresses()){
+        for (GeneralCoinAddress address : account.getAddresses()) {
             gtba.addAddress(address);
         }
         gtba.start();
-        
+
         AccountActivityWatcher watcher = new AccountActivityWatcher(account);
-        for(GeneralCoinAddress address : account.getAddresses()){
+        for (GeneralCoinAddress address : account.getAddresses()) {
             watcher.addAddress(address.getAddressString(account.getNetworkParam()));
         }
         watcher.connect();
@@ -334,9 +341,9 @@ public class MainTest {
         System.out.println("LiteCoin balance " + account.getBalance().get(0).getAmmount() / 100000000);
         System.out.println("LiteCoin balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
         System.out.println("LiteCoin balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
-        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.LITECOIN, ((long) account.getBalance().get(0).getConfirmedAmount()) - (long)(0.01*Math.pow(10, de.bitsharesmunich.cryptocoincore.base.Coin.LITECOIN.getPrecision())), "", null);
+        account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.LITECOIN, ((long) account.getBalance().get(0).getConfirmedAmount()) - (long) (0.01 * Math.pow(10, de.bitsharesmunich.cryptocoincore.base.Coin.LITECOIN.getPrecision())), "", null);
     }
-    
+
     public void testSendDogeCoinAccount() {
         BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
         final DogeCoinAccount account = new DogeCoinAccount(accountSeed, " Test DogeCoin Account");
@@ -414,5 +421,30 @@ public class MainTest {
         System.out.println("DogeCoin balance conf " + account.getBalance().get(0).getConfirmedAmount() / 100000000);
         System.out.println("DogeCoin balance unconf " + account.getBalance().get(0).getUnconfirmedAmount() / 100000000);
         account.send(toAddress, de.bitsharesmunich.cryptocoincore.base.Coin.DOGECOIN, ((long) account.getBalance().get(0).getConfirmedAmount()) - 1000000, "", null);
+    }
+
+    public void testSteemTransferBuild() throws MalformedTransactionException {
+        SteemTransferTransactionBuilder builder = new SteemTransferTransactionBuilder();
+        BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
+        String sourceAccount = "cuenta1";
+        SteemAccount account = new SteemAccount(0, 0, 0, 0, 0, 0, sourceAccount, de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN, accountSeed);
+        SteemAssetAmount amount = new SteemAssetAmount(UnsignedLong.valueOf(1000));
+        String memo = "Test memo";
+
+        String destinationAccount = "cuenta2";
+
+        BlockData blockData = new BlockData(0, 0, new Date().getTime());
+
+        builder.setPrivateKey(account.getKey(SteemAccount.ACTIVE_ROLE));
+        builder.setAmount(amount);
+        builder.setMemo(memo);
+        builder.setSource(sourceAccount);
+        builder.setDestination(destinationAccount);
+
+        builder.setBlockData(blockData);
+        
+        de.bitsharesmunich.graphenej.Transaction trans = builder.build();
+        System.out.println("JSON : " + trans.toJsonString());
+
     }
 }

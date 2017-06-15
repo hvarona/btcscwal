@@ -97,6 +97,6 @@ public class SteemTransferTransactionBuilder extends TransactionBuilder {
             }
             operations.add(transferOperation);
         }
-        return new Transaction(privateKey, blockData, operations);
+        return new SteemTransaction(privateKey, blockData, operations);
     }
 }

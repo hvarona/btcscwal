@@ -60,7 +60,12 @@ public class SteemAssetAmount implements ByteSerializable, JsonSerializable {
 
     @Override
     public JsonObject toJsonObject() {
-        return new Gson().toJsonTree(amount + " " + asset).getAsJsonObject();
+        return null;
+    }
+    
+    @Override
+    public String toString(){
+        return amount + " " + asset;
     }
 
     /**
