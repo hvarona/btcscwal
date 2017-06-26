@@ -1,5 +1,6 @@
 package de.bitsharesmunich.cryptocoincore.test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.UnsignedLong;
 import de.bitsharesmunich.cryptocoincore.dogecoin.DogeCoinAccount;
 import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
@@ -30,23 +31,33 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutPoint;
 import org.bitcoinj.core.UTXO;
+import org.bitcoinj.crypto.ChildNumber;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.script.Script;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Base64;
 
 /**
  *
@@ -426,8 +437,11 @@ public class MainTest {
     public void testSteemTransferBuild() throws MalformedTransactionException {
         SteemTransferTransactionBuilder builder = new SteemTransferTransactionBuilder();
         BIP39 accountSeed = new BIP39(TEST_SEED_WORDS, "");
-        String sourceAccount = "cuenta1";
-        SteemAccount account = new SteemAccount(0, 0, 0, 0, 0, 0, sourceAccount, de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN, accountSeed);
+        String sourceAccount = "noriad";
+        //SteemAccount account = new SteemAccount(0, 0, 0, 0, 0, 0, sourceAccount, de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN, accountSeed);
+        ECKey activeKey = DumpedPrivateKey.fromBase58(NetworkParameters.fromID(NetworkParameters.ID_MAINNET), "5JX4k811cvHk5Qi6bE5iQfybG9wLiiCT52JRBTbVsaKXHeoBuyo").getKey();
+        System.out.println("Address " + new de.bitsharesmunich.graphenej.Address(ECKey.fromPublicOnly(activeKey.getPubKey()), "STM").toString());
+        SteemAccount account = new SteemAccount(0, 0, sourceAccount, de.bitsharesmunich.cryptocoincore.base.Coin.BITCOIN, activeKey);
         SteemAssetAmount amount = new SteemAssetAmount(UnsignedLong.valueOf(1000));
         String memo = "Test memo";
 
@@ -442,7 +456,7 @@ public class MainTest {
         builder.setDestination(destinationAccount);
 
         builder.setBlockData(blockData);
-        
+
         de.bitsharesmunich.graphenej.Transaction trans = builder.build();
         System.out.println("JSON : " + trans.toJsonString());
 

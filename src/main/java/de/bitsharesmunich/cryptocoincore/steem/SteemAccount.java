@@ -4,6 +4,7 @@ import de.bitsharesmunich.cryptocoincore.base.AccountSeed;
 import de.bitsharesmunich.cryptocoincore.base.Coin;
 import de.bitsharesmunich.cryptocoincore.base.GrapheneCoinAccount;
 import de.bitsharesmunich.graphenej.Address;
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.DeterministicKey;
 
 /**
@@ -13,7 +14,7 @@ import org.bitcoinj.crypto.DeterministicKey;
 public class SteemAccount extends GrapheneCoinAccount{
     
     private int postingIndex = 0;
-    private DeterministicKey postingKey = null;
+    private ECKey postingKey = null;
     
     // Steem only role
     public static final int POSTING_ROLE = 3;
@@ -25,10 +26,15 @@ public class SteemAccount extends GrapheneCoinAccount{
     public SteemAccount(int networkNumber, long id, String name, Coin coin, AccountSeed seed) {
         super(networkNumber, id, name, coin, seed);
     }
+    
+    public SteemAccount(int networkNumber, long id, String name, Coin coin, ECKey activeKey){
+        super(networkNumber, id, name, coin, null);
+        this.activeKey = activeKey;
+    }
 
     @Override
     public Address getAddress(int role) {
-        DeterministicKey answerKey = null;
+        ECKey answerKey = null;
         switch(role){
             case(OWNER_ROLE):
             {
@@ -71,8 +77,7 @@ public class SteemAccount extends GrapheneCoinAccount{
         return null;
     }
     
-    public DeterministicKey getKey(int role){
-        DeterministicKey answerKey = null;
+    public ECKey getKey(int role){
         switch(role){
             case(OWNER_ROLE):
             {

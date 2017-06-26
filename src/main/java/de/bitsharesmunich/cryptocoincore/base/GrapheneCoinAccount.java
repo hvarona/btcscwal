@@ -2,6 +2,7 @@ package de.bitsharesmunich.cryptocoincore.base;
 
 import de.bitsharesmunich.graphenej.Address;
 import java.util.List;
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -17,9 +18,9 @@ public abstract class GrapheneCoinAccount extends CryptoCoinAccount {
     protected int activeIndex = 0;
     protected int memoIndex = 0;
     protected DeterministicKey accountKey;
-    protected DeterministicKey ownerKey = null;
-    protected DeterministicKey activeKey = null;
-    protected DeterministicKey memoKey = null;
+    protected ECKey ownerKey = null;
+    protected ECKey activeKey = null;
+    protected ECKey memoKey = null;
 
     private final int networkNumber;
 
@@ -39,7 +40,7 @@ public abstract class GrapheneCoinAccount extends CryptoCoinAccount {
         this.activeIndex = activeIndex;
         this.memoIndex = memoIndex;
         this.networkNumber = networkNumber;
-        calculateAddresses();
+        //calculateAddresses();
     }
 
     public GrapheneCoinAccount(int networkNumber, long id, String name, Coin coin, AccountSeed seed) {
@@ -55,7 +56,7 @@ public abstract class GrapheneCoinAccount extends CryptoCoinAccount {
         accountKey = HDKeyDerivation.deriveChildKey(networkKey, new ChildNumber(accountNumber, true));
     }
 
-    protected DeterministicKey calculateKey(int roleNumber, int addressIndex) {
+    protected ECKey calculateKey(int roleNumber, int addressIndex) {
         DeterministicKey roleKey = HDKeyDerivation.deriveChildKey(accountKey, new ChildNumber(roleNumber, true));
         return HDKeyDerivation.deriveChildKey(roleKey, new ChildNumber(addressIndex, true));
     }
