@@ -36,6 +36,21 @@ public class CryptoCoreSQLiteContract{
         //TODO Each graphene network has its own role types, we need to design a way of indexing each address of each role
     }
     
+    public static class GrapheneImportedAccount /*implements BaseColumns*/ {
+        public static final String TABLE_NAME ="graphene_imported_accounts";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_NAME = "account_name"; //The name of the account
+        public static final String COLUMN_TYPE = "network_type";//Steem,BitShares,PeerPlays,Muse
+    }
+    
+    public static class GrapheneImportedKeys/*implements BaseColumns*/ {
+        public static final String TABLE_NAME ="graphene_imported_keys";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ID_ACCOUNT = "id_graphene_account";
+        public static final String COLUMN_ROLE = "role";
+        public static final String COLUMN_WIF = "wif";
+    }
+    
     public static class GeneralOrphanKeys /*implements BaseColumns*/ {
         public static final String TABLE_NAME = "general_orphan_key";
         public static final String COLUMN_ID = "id";
